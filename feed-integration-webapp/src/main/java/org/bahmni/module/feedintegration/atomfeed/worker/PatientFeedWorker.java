@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class PatientFeedWorker implements EventWorker {
-    private static final Logger logger = LoggerFactory.getLogger(EncounterFeedWorker.class);
+    private static final Logger logger = LoggerFactory.getLogger(PatientFeedWorker.class);
 
     @Autowired
     private OpenMRSService openMRSService;
@@ -22,16 +22,12 @@ public class PatientFeedWorker implements EventWorker {
 
     @Override
     public void process(Event event) {
-        System.out.println("***************** ");
-        System.out.println("Process patient event:" + event.getContent());
-        System.out.println("***************** ");
         try {
             logger.info("Getting patient details ...");
             String patientUri = event.getContent();
             OpenMRSPatientFullRepresentation patientFR = openMRSService.getPatientFR(patientUri);
             CraterAPIcalls crater;
             crater = new CraterAPIcalls();
-            String auth = crater.login();
             crater.create_update(patientFR);
         } catch (Exception e) {
             logger.error("Failed to fetch patient details", e);

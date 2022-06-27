@@ -8,7 +8,7 @@ import ca.uhn.hl7v2.model.Message;
 import ca.uhn.hl7v2.model.v25.message.ORM_O01;
 import ca.uhn.hl7v2.protocol.ReceivingApplication;
 import ca.uhn.hl7v2.protocol.ReceivingApplicationException;
-import org.bahmni.module.BahmniFeedIntegrationExample;
+import org.bahmni.module.CraterAtomfeed;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.runner.RunWith;
@@ -25,7 +25,7 @@ import java.util.Map;
 
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = BahmniFeedIntegrationExample.class)
+@SpringApplicationConfiguration(classes = CraterAtomfeed.class)
 public abstract class BaseIntegrationTest {
 
     public static HL7Service modalityStubServer;

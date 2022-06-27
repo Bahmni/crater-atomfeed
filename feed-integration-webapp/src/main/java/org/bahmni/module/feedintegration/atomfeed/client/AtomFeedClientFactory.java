@@ -1,6 +1,5 @@
 package org.bahmni.module.feedintegration.atomfeed.client;
 
-import org.bahmni.module.feedintegration.atomfeed.worker.EncounterFeedWorker;
 import org.bahmni.webclients.ClientCookies;
 import org.bahmni.webclients.HttpClient;
 import org.ict4h.atomfeed.client.repository.AllFeeds;
