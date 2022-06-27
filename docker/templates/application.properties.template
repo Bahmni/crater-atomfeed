@@ -1,0 +1,24 @@
+spring.datasource.url=jdbc:hsqldb:hsql://localhost/bahmni_feed_client_example
+spring.datasource.username=sa
+spring.datasource.password=
+# spring.datasource.driver-class-name=org.hsqldb.jdbc.JDBCDriver
+spring.jpa.generate-ddl=false
+spring.jpa.database-platform=org.hibernate.dialect.HSQLDialect
+spring.jpa.show-sql=false
+spring.jpa.hibernate.ddl-auto=none
+# server.port=9020
+
+liquibase.change-log=classpath:db/changelog/liquibase.xml
+
+enable.scheduling=true
+
+con.content_type = application/json
+con.accept  = application/json
+con.setDoOutput = true
+con.setDoInput = true
+
+crater.currencyid = 13 #for INR
+crater.url = https://demo.craterapp.com/api/v1/
+crater.company = 1
+crater.username = admin@craterapp.com
+crater.password = crater@123

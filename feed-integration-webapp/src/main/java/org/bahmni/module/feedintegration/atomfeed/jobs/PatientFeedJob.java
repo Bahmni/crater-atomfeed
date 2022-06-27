@@ -26,9 +26,6 @@ public class PatientFeedJob implements FeedJob {
         this.atomFeedClientFactory = atomFeedClientFactory;
     }
 
-    public PatientFeedJob() {
-    }
-
     @Override
     public void process() throws InterruptedException {
         if(atomFeedClient == null){

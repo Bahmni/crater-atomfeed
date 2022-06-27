@@ -3,13 +3,13 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>bahmni-feed-integration-example</artifactId>
+        <artifactId>crater-atomfeed</artifactId>
         <groupId>org.bahmni</groupId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
-    <artifactId>bahmni-feed-integration-example-webapp</artifactId>
+    <artifactId>crater-atomfeed-webapp</artifactId>
     <modelVersion>4.0.0</modelVersion>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
     <build>
         <plugins>
             <plugin>
@@ -47,31 +47,16 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>11</source>
-                    <target>11</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
-            <!--            <plugin>-->
-            <!--                <groupId>org.apache.tomcat.maven</groupId>-->
-            <!--                <artifactId>tomcat7-maven-plugin</artifactId>-->
-            <!--                <version>2.0</version>-->
-            <!--                <executions>-->
-            <!--                    <execution>-->
-            <!--                        <id>tomcat-run</id>-->
-            <!--                        <goals>-->
-            <!--                            <goal>exec-war-only</goal>-->
-            <!--                        </goals>-->
-            <!--                        <phase>package</phase>-->
-            <!--                        <configuration>-->
-            <!--                            <path>/</path>-->
-            <!--                            <enableNaming>false</enableNaming>-->
-            <!--                            <finalName>feedWebApp.jar</finalName>   -->
-            <!--                        </configuration>-->
-            <!--                    </execution>-->
-            <!--                </executions>-->
-            <!--            </plugin>-->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
         </plugins>
-        <finalName>${parent.artifactId}</finalName>
+        <finalName>${project.parent.artifactId}</finalName>
             <resources>
                 <resource>
                     <directory>src/main/resources</directory>
@@ -102,13 +87,10 @@
             </resources>
     </build>
 
-
-
     <properties>
         <atomfeed.version>1.9.4</atomfeed.version>
         <hapi-base.version>2.2</hapi-base.version>
     </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -118,11 +100,13 @@
                     <groupId>ch.qos.logback</groupId>
                     <artifactId>logback-classic</artifactId>
                 </exclusion>
-                <!--                <exclusion>-->
-                <!--                    <groupId>org.springframework.boot</groupId>-->
-                <!--                    <artifactId>spring-boot-starter-tomcat</artifactId>-->
-                <!--                </exclusion>-->
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jar-plugin</artifactId>
+            <version>3.2.2</version>
+            <type>maven-plugin</type>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -136,18 +120,11 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-context-support</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.quartz-scheduler</groupId>
             <artifactId>quartz</artifactId>
             <version>2.2.1</version>
         </dependency>
-        <!--        <dependency>-->
-        <!--            <groupId>org.postgresql</groupId>-->
-        <!--            <artifactId>postgresql</artifactId>-->
-        <!--            <version>9.2-1003-jdbc4</version>-->
-        <!--            <scope>runtime</scope>-->
-        <!--        </dependency>-->
         <dependency>
             <groupId>org.ict4h</groupId>
             <artifactId>atomfeed-client</artifactId>
@@ -191,8 +168,6 @@
             <artifactId>httpmime</artifactId>
             <version>4.5.6</version>
         </dependency>
-
-
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
@@ -203,7 +178,6 @@
             <artifactId>jackson-core</artifactId>
             <version>2.10.0</version>
         </dependency>
-
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
@@ -316,7 +290,6 @@
             <artifactId>jakarta.xml.bind-api</artifactId>
             <version>2.3.2</version>
         </dependency>
-
         <!-- Runtime, com.sun.xml.bind module -->
         <dependency>
             <groupId>org.glassfish.jaxb</groupId>
@@ -324,32 +297,20 @@
             <version>2.3.2</version>
         </dependency>
         <dependency>
-            <groupId>com.jayway.jsonpath</groupId>
-            <artifactId>json-path</artifactId>
-            <version>2.4.0</version>
-        </dependency>
-        <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
-            <version>20090211</version>
+            <version>20220320</version>
         </dependency>
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.29</version>
+            <version>5.1.8</version>
         </dependency>
-
-
         <dependency>
             <groupId>org.hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
             <version>2.5.2</version>
             <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>1.4.200</version>
         </dependency>
     </dependencies>
     <pluginRepositories>

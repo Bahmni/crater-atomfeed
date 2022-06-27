@@ -25,14 +25,12 @@ public class AtomFeedProperties {
             properties.load(propertyStream);
 
         } catch (Exception e) {
-//            LogEvent.logError("AtomFeedProperties", "Constructor", e.toString());
         } finally {
             if (null != propertyStream) {
                 try {
                     propertyStream.close();
                     propertyStream = null;
                 } catch (Exception e) {
-//                    LogEvent.logError("AtomFeedProperties", "Constructor final", e.toString());
                 }
             }
 
