@@ -14,6 +14,8 @@ import org.bahmni.module.feedintegration.atomfeed.contract.patient.OpenMRSPatien
 import org.bahmni.module.feedintegration.atomfeed.contract.patient.OpenMRSPersonName;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -28,11 +30,12 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 public class CraterAPIcalls {
 
     private final CraterProperties properties = CraterProperties.getInstance();
-    CraterLogin craterLogin;
+    CraterLogin craterLogin = new CraterLogin();
     private final String auth = craterLogin.getToken();
 
     public CraterAPIcalls() {
     }
+    private static final Logger logger = LoggerFactory.getLogger(CraterAPIcalls.class);
 
     public HttpURLConnection getConnection(String api, String httpMethod, String auth) throws IOException {
         URL url = new URL(properties.getUrl() + "/api/v1/" + api);
@@ -44,7 +47,6 @@ public class CraterAPIcalls {
         con.setRequestProperty("company", properties.getCompany());
         con.setDoOutput(Boolean.parseBoolean(properties.getSetDoOutput()));
         con.setDoInput(Boolean.parseBoolean(properties.getSetDoInput()));
-        System.out.println(con);
         return con;
     }
 
@@ -125,7 +127,7 @@ public class CraterAPIcalls {
             return "Customer not found";
 
         } else {
-            return myObject.getJSONArray("data").getJSONObject(0).getString("id");
+            return String.valueOf(myObject.getJSONArray("data").getJSONObject(0).getInt("id"));
         }
     }
 
@@ -139,7 +141,7 @@ public class CraterAPIcalls {
             }
         }
         else{
-            System.out.println("Not Authenticated");
+            logger.error("Not Authenticated");
         }
     }
 

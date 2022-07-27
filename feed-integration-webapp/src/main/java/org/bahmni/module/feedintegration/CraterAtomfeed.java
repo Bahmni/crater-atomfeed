@@ -1,6 +1,5 @@
 package org.bahmni.module.feedintegration;
 
-import org.bahmni.module.feedintegration.crater.CraterLogin;
 import org.hibernate.SessionFactory;
 import org.hibernate.jpa.HibernateEntityManagerFactory;
 import org.slf4j.Logger;
