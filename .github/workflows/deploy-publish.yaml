@@ -1,7 +1,7 @@
 name: Build and Publish
 on:
   push:
-    branches: [BAH-1556]
+    branches: [BAH-1938]
     paths-ignore:
       - "**.md"
 
@@ -33,7 +33,7 @@ jobs:
       - name: Login to DockerHub
         uses: docker/login-action@v1 
         with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          username: ${{ secrets.DOCKER_HUB_USERNAME }} 
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
       - name: Docker Build and push
         uses: docker/build-push-action@v2
