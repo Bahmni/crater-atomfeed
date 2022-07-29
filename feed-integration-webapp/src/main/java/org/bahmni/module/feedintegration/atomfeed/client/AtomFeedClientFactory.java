@@ -24,7 +24,9 @@ public class AtomFeedClientFactory {
         HttpClient authenticatedWebClient = WebClientFactory.getClient();
         org.bahmni.webclients.ConnectionDetails connectionDetails = ConnectionDetails.get();
         String authUri = connectionDetails.getAuthUrl();
+//        System.out.println(authUri);
         ClientCookies cookies = getCookies(authenticatedWebClient, authUri);
+//        System.out.println("ykvjkno");
         return getFeedClient(AtomFeedProperties.getInstance(),
                 feedName, encounterFeedWorker, cookies);
     }
@@ -59,6 +61,8 @@ public class AtomFeedClientFactory {
 
     private ClientCookies getCookies(HttpClient authenticatedWebClient, String urlString) {
         try {
+            ClientCookies k = authenticatedWebClient.getCookies(new URI(urlString));
+            System.out.println(k.toString());
             return authenticatedWebClient.getCookies(new URI(urlString));
         } catch (URISyntaxException e) {
             throw new RuntimeException("Is not a valid URI - " + urlString);

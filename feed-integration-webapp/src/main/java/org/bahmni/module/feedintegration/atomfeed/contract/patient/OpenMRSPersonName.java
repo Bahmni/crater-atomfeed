@@ -60,4 +60,11 @@ public class OpenMRSPersonName {
                 ", voided=" + voided +
                 '}';
     }
+//    public String getCompleteName() {
+//        if (middleName.equals("")) {
+//            return givenName + " " + familyName;
+//        } else {
+//            return givenName + " " + middleName + " " + familyName;
+//        }
+//    }
 }
