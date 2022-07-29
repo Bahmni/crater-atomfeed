@@ -28,7 +28,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 public class CraterAPIcalls {
 
     private final CraterProperties properties = CraterProperties.getInstance();
-    CraterLogin craterLogin;
+    CraterLogin craterLogin = new CraterLogin();
     private final String auth = craterLogin.getToken();
 
     public CraterAPIcalls() {
