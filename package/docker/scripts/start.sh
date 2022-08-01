@@ -2,8 +2,9 @@
 set -e
 
 echo "[INFO] Substituting Environment Variables"
-envsubst < /etc/atomfeed.properties.template > "${WAR_DIRECTORY}"/WEB-INF/classes/atomfeed.properties
-envsubst < /etc/application.properties.template > "${WAR_DIRECTORY}"/WEB-INF/classes/application.properties
+envsubst < /war/atomfeed.properties.template > /war/WEB-INF/classes/atomfeed.properties
+envsubst < /war/application.properties.template > /war/WEB-INF/classes/application.properties
+envsubst < /war/crater.properties.template > /war/WEB-INF/classes/crater.properties
 
 echo "Waiting for ${DB_HOST}.."
 sh wait-for.sh -t 300 "${DB_HOST}":"${DB_PORT}"
