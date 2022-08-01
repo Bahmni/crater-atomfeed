@@ -37,7 +37,6 @@ public class HL7Utils {
         msh.getDateTimeOfMessage().getTs1_Time().setValue(getHl7DateFormat().format(dateTime));
         msh.getMessageType().getMessageCode().setValue(messageType);
         msh.getMessageType().getTriggerEvent().setValue(triggerEvent);
-        //  TODO: do we need to send Message Control ID?
         msh.getProcessingID().getProcessingID().setValue("P");  // stands for production (?)
         msh.getVersionID().getVersionID().setValue("2.5");
 

@@ -3,10 +3,10 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
-    <property name="schemaName" value="public"/>
+    <property name="schemaName" value="crater_atomfeed"/>
     <include file="classpath:sql/db_migrations.xml"/>
 
-    <changeSet id="104" author="Tuhin" >
+    <changeSet id="1" author="Tuhin" >
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="event_records_offset_marker"/>
@@ -22,7 +22,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="PACS-201506250509" author="Tuhin">
+    <changeSet id="2" author="Tuhin">
         <comment>Creating quartz cron scheduler Table</comment>
         <createTable tableName="quartz_cron_scheduler">
             <column name="id" type="int" autoIncrement="true">
@@ -41,7 +41,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="PACS-201506250516" author="Tuhin">
+    <changeSet id="3" author="Tuhin">
         <comment>Creating Modality Table</comment>
         <createTable tableName="modality">
             <column name="id" type="int" autoIncrement="true">
@@ -63,7 +63,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="PACS-201506260519" author="Tuhin">
+    <changeSet id="4" author="Tuhin">
         <comment>Creating Order Type table</comment>
         <createTable tableName="order_type">
             <column name="id" type="int" autoIncrement="true">
@@ -75,12 +75,9 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
-        <addForeignKeyConstraint baseTableName="order_type" baseColumnNames="modality_id" constraintName="fk_ot_modality"
-                                 referencedTableName="modality"
-                                 referencedColumnNames="id"/>
     </changeSet>
 
-    <changeSet id="PACS-201506260525" author="Tuhin">
+    <changeSet id="5" author="Tuhin">
         <comment>Creating Orders table</comment>
         <createTable tableName="order">
             <column name="id" type="int" autoIncrement="true">
@@ -114,11 +111,8 @@
                                  referencedTableName="order_type"
                                  referencedColumnNames="id"/>
     </changeSet>
-<!--    <changeSet id="PACS-201507091128" author="Sudhakar, Vikash">-->
-<!--        <renameTable oldTableName="order" newTableName="test_order"/>-->
-<!--    </changeSet>-->
 
-    <changeSet id="PACS-201507220554" author="JP, Hemanth">
+    <changeSet id="6" author="Tuhin">
         <comment>Creating order details table</comment>
         <createTable tableName="order_details">
             <column name="id" type="int" autoIncrement="true">
@@ -134,12 +128,9 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
-<!--        <addForeignKeyConstraint baseTableName="order_details" baseColumnNames="test_order_id" constraintName="fk_od_test_order_id"-->
-<!--                                 referencedTableName="orders"-->
-<!--                                 referencedColumnNames="id"/>-->
     </changeSet>
 
-    <changeSet id="example-202111161130" author="Tuhin">
+    <changeSet id="7" author="Tuhin">
         <comment>Adding schedulers for openmrs patient</comment>
         <sql>
             insert into quartz_cron_scheduler (name, cron_statement, start_delay, enabled) values ('openMRSPatientFeedJob', '0/15 * * * * ?', 0, true);

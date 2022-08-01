@@ -1,3 +1,3 @@
---CREATE USER examplefeeduser WITH PASSWORD 'password';
---CREATE DATABASE bahmni_feed_integration_example;
---GRANT ALL PRIVILEGES ON database bahmni_feed_integration_example to examplefeeduser;
+CREATE USER beehyv WITH PASSWORD 'beehyv123';
+CREATE DATABASE crater_atomfeed;
+GRANT ALL PRIVILEGES ON database crater_atomfeed to beehyv;

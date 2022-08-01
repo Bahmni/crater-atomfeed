@@ -32,9 +32,9 @@ public class CraterLogin {
                     .addParameter("device_name", properties.getDeviceName())
                     .build();
 
-            httppost.addHeader("Content Type", properties.getContent_type());
-            httppost.addHeader("Accept", properties.getAccept());
-            httppost.addHeader("company", properties.getCompany());
+            httppost.addHeader("Content Type", "*/*");
+            httppost.addHeader("Accept", "*/*");
+            httppost.addHeader("company", "*/*");
 
             CloseableHttpResponse response = httpclient.execute(httppost);
             String authString = EntityUtils.toString(response.getEntity());

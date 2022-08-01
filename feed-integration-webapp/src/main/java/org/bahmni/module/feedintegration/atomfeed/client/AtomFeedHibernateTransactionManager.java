@@ -62,7 +62,6 @@ public class AtomFeedHibernateTransactionManager implements AFTransactionManager
 
     @Override
     public Connection getConnection() throws SQLException {
-        //TODO: ensure that only connection associated with current thread current transaction is given
         SessionImpl sessionImpl = (SessionImpl) getCurrentSession();
         return sessionImpl.connection();
     }

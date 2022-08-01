@@ -69,7 +69,7 @@
                     <filtering>true</filtering>
                     <includes>
                         <include>**/*.properties</include>
-                        <include>**/*.yml</include>
+                        <include>**/*.xml</include>
                     </includes>
                 </resource>
                 <resource>
@@ -77,7 +77,7 @@
                     <filtering>true</filtering>
                     <includes>
                         <include>**/*.properties</include>
-                        <include>**/*.yml</include>
+                        <include>**/*.xml</include>
                     </includes>
                     <excludes>
                         <exclude>**/*.java</exclude>
@@ -86,7 +86,6 @@
                 </resource>
             </resources>
     </build>
-
     <properties>
         <atomfeed.version>1.9.4</atomfeed.version>
         <hapi-base.version>2.2</hapi-base.version>
@@ -194,11 +193,6 @@
             <version>1.0.0</version>
         </dependency>
         <dependency>
-            <groupId>org.liquibase.ext</groupId>
-            <artifactId>liquibase-postgresql</artifactId>
-            <version>3.0</version>
-        </dependency>
-        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.9</version>
@@ -259,6 +253,11 @@
             <version>2.6.1</version>
         </dependency>
         <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-web</artifactId>
+            <version>2.18.0</version>
+        </dependency>
+        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>1.7.19</version>
@@ -284,13 +283,11 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <!-- API, java.xml.bind module -->
         <dependency>
             <groupId>jakarta.xml.bind</groupId>
             <artifactId>jakarta.xml.bind-api</artifactId>
             <version>2.3.2</version>
         </dependency>
-        <!-- Runtime, com.sun.xml.bind module -->
         <dependency>
             <groupId>org.glassfish.jaxb</groupId>
             <artifactId>jaxb-runtime</artifactId>

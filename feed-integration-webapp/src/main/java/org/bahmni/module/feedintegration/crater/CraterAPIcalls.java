@@ -14,6 +14,8 @@ import org.bahmni.module.feedintegration.atomfeed.contract.patient.OpenMRSPatien
 import org.bahmni.module.feedintegration.atomfeed.contract.patient.OpenMRSPersonName;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -31,6 +33,8 @@ public class CraterAPIcalls {
     CraterLogin craterLogin = new CraterLogin();
     private final String auth = craterLogin.getToken();
 
+    private static final Logger logger = LoggerFactory.getLogger(CraterAPIcalls.class);
+
     public CraterAPIcalls() {
     }
 
@@ -44,7 +48,6 @@ public class CraterAPIcalls {
         con.setRequestProperty("company", properties.getCompany());
         con.setDoOutput(Boolean.parseBoolean(properties.getSetDoOutput()));
         con.setDoInput(Boolean.parseBoolean(properties.getSetDoInput()));
-        System.out.println(con);
         return con;
     }
 
@@ -60,12 +63,7 @@ public class CraterAPIcalls {
         try (CloseableHttpResponse response = httpClient.execute(request)) {
             HttpEntity entity = response.getEntity();
             String result = EntityUtils.toString(entity);
-            // modify this
-            if (result.charAt(0) == '1') {
-                return "Authenticated";
-            } else {
-                return "Not Authenticated";
-            }
+            return ((result.charAt(0) == '1') ? "Authenticated" : "Not Authenticated");
         }
     }
 
@@ -139,7 +137,7 @@ public class CraterAPIcalls {
             }
         }
         else{
-            System.out.println("Not Authenticated");
+            logger.error("Not Authenticated");
         }
     }
 
@@ -152,16 +150,9 @@ public class CraterAPIcalls {
     }
 
     public String getname(OpenMRSPatientFullRepresentation patientFR) {
-        String name;
         OpenMRSPersonName preferredName = patientFR.getPerson().getPreferredName();
-        if (preferredName.getMiddleName() == null) {
-            name = preferredName.getGivenName()
-                    + " " + preferredName.getFamilyName();
-        } else {
-            name = preferredName.getGivenName()
-                    + " " + preferredName.getMiddleName()
-                    + " " + preferredName.getFamilyName();
-        }
-        return name;
+        return preferredName.getGivenName()
+                + (preferredName.getMiddleName() != null ? " " + preferredName.getMiddleName() : EMPTY_STRING)
+                + " " + preferredName.getFamilyName();
     }
 }
