@@ -18,6 +18,9 @@ sh wait-for.sh -t 300 "${CRATER_DB_HOST}":"${CRATER_DB_PORT}"
 echo "Waiting for ${OPENMRS_HOST}.."
 sh wait-for.sh -t 300 "${OPENMRS_HOST}":"${OPENMRS_PORT}"
 
+rm crater-atomfeed.war
+jar cvf crater-atomfeed.war *
+mv crater-atomfeed.war webapps
 echo "[INFO] Starting Application"
 pwd
 ls

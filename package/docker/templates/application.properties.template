@@ -1,4 +1,4 @@
-spring.datasource.url=jdbc:mysql://${CRATER_DB_NAME}:${CRATER_DB_PORT}/${CRATER_DB_NAME}
+spring.datasource.url=jdbc:mysql://${CRATER_DB_HOST}:${CRATER_DB_PORT}/${CRATER_DB_NAME}
 spring.datasource.username=${CRATER_DB_USERNAME}
 spring.datasource.password=${CRATER_DB_PASSWORD}
 spring.jpa.generate-ddl=false
