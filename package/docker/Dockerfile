@@ -1,20 +1,11 @@
-FROM openjdk:8-alpine
-ENV TOMCAT_MAJOR=8
-ENV TOMCAT_VERSION=8.5.37
-ENV CATALINA_HOME=/opt/tomcat
-RUN apk add curl gettext ttf-dejavu
-RUN mkdir -p /opt
-# install tomcat
-RUN curl -jkSL -o /tmp/apache-tomcat.tar.gz http://archive.apache.org/dist/tomcat/tomcat-${TOMCAT_MAJOR}/v${TOMCAT_VERSION}/bin/apache-tomcat-${TOMCAT_VERSION}.tar.gz && \
-    gunzip /tmp/apache-tomcat.tar.gz && \
-    tar -C /opt -xf /tmp/apache-tomcat.tar && \
-    ln -s /opt/apache-tomcat-$TOMCAT_VERSION $CATALINA_HOME
-    
-EXPOSE 8080
-
-WORKDIR $CATALINA_HOME
+FROM tomcat:latest
 # Crater steps
-COPY ../feed-integration-webapp/target/crater-atomfeed.war crater-atomfeed.war
+RUN apt-get update -y
+RUN apt-get install -y gettext
+WORKDIR /usr/local/tomcat
+RUN mkdir -p war
+COPY ../feed-integration-webapp/target/crater-atomfeed.war war/crater-atomfeed.war
+WORKDIR /usr/local/tomcat/war
 RUN jar xvf crater-atomfeed.war
 COPY package/docker/templates/atomfeed.properties.template atomfeed.properties.template
 COPY package/docker/templates/application.properties.template application.properties.template
