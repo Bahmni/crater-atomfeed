@@ -2,9 +2,9 @@
 set -e
 
 echo "[INFO] Substituting Environment Variables"
-envsubst < /war/atomfeed.properties.template > /war/WEB-INF/classes/atomfeed.properties
-envsubst < /war/application.properties.template > /war/WEB-INF/classes/application.properties
-envsubst < /war/crater.properties.template > /war/WEB-INF/classes/crater.properties
+envsubst < /$CATALINA_HOME/atomfeed.properties.template > $CATALINA_HOME/WEB-INF/classes/atomfeed.properties
+envsubst < /$CATALINA_HOME/application.properties.template > /$CATALINA_HOME/WEB-INF/classes/application.properties
+envsubst < /$CATALINA_HOME/crater.properties.template > /$CATALINA_HOME/WEB-INF/classes/crater.properties
 
 echo "Waiting for ${CRATER_DB_HOST}.."
 sh wait-for.sh -t 300 "${CRATER_DB_HOST}":"${CRATER_DB_PORT}"
@@ -13,4 +13,5 @@ echo "Waiting for ${OPENMRS_HOST}.."
 sh wait-for.sh -t 300 "${OPENMRS_HOST}":"${OPENMRS_PORT}"
 
 echo "[INFO] Starting Application"
-java -jar $SERVER_OPTS $DEBUG_OPTS /opt/crater/lib/crater.jar
+# java -jar $SERVER_OPTS $DEBUG_OPTS /$CATALINA_HOME/crater.$CATALINA_HOME
+$CATALINA_HOME/bin/catalina.sh run
