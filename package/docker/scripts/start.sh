@@ -6,8 +6,8 @@ envsubst < /war/atomfeed.properties.template > /war/WEB-INF/classes/atomfeed.pro
 envsubst < /war/application.properties.template > /war/WEB-INF/classes/application.properties
 envsubst < /war/crater.properties.template > /war/WEB-INF/classes/crater.properties
 
-echo "Waiting for ${DB_HOST}.."
-sh wait-for.sh -t 300 "${DB_HOST}":"${DB_PORT}"
+echo "Waiting for ${CRATER_DB_HOST}.."
+sh wait-for.sh -t 300 "${CRATER_DB_HOST}":"${CRATER_DB_PORT}"
 
 echo "Waiting for ${OPENMRS_HOST}.."
 sh wait-for.sh -t 300 "${OPENMRS_HOST}":"${OPENMRS_PORT}"
