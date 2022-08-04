@@ -26,7 +26,7 @@ public class PatientFeedWorker implements EventWorker {
             logger.info("Getting patient details ...");
             String patientUri = event.getContent();
             OpenMRSPatientFullRepresentation patientFR = openMRSService.getPatientFR(patientUri);
-            CraterAPIcalls crater = new CraterAPIcalls();;
+            CraterAPIcalls crater = new CraterAPIcalls();
             crater.create_update(patientFR);
         } catch (Exception e) {
             logger.error("Failed to fetch patient details", e);

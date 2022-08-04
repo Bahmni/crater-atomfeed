@@ -123,7 +123,7 @@ public class CraterAPIcalls {
             return "Customer not found";
 
         } else {
-            return myObject.getJSONArray("data").getJSONObject(0).getString("id");
+            return String.valueOf(myObject.getJSONArray("data").getJSONObject(0).getInt("id"));
         }
     }
 
