@@ -6,7 +6,7 @@
     <property name="schemaName" value="crater_atomfeed"/>
     <include file="classpath:sql/db_migrations.xml"/>
 
-    <changeSet id="1" author="Tuhin" >
+    <changeSet id="1" author="Bahmni" >
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="event_records_offset_marker"/>
@@ -22,7 +22,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="2" author="Tuhin">
+    <changeSet id="2" author="Bahmni">
         <comment>Creating quartz cron scheduler Table</comment>
         <createTable tableName="quartz_cron_scheduler">
             <column name="id" type="int" autoIncrement="true">
@@ -41,7 +41,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="7" author="Tuhin">
+    <changeSet id="7" author="Bahmni">
         <comment>Adding schedulers for openmrs patient</comment>
         <sql>
             insert into quartz_cron_scheduler (name, cron_statement, start_delay, enabled) values ('openMRSPatientFeedJob', '0/15 * * * * ?', 0, true);
