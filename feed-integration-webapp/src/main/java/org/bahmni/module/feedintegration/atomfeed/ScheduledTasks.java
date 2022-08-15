@@ -1,7 +1,7 @@
 package org.bahmni.module.feedintegration.atomfeed;
 
 import org.bahmni.module.feedintegration.atomfeed.jobs.FeedJob;
-import org.bahmni.module.feedintegration.model.QuartzCronScheduler;
+import org.bahmni.module.feedintegration.model.openmrsPatientFeedForCraterJob;
 import org.bahmni.module.feedintegration.repository.CronJobRepository;
 import org.quartz.CronExpression;
 import org.slf4j.Logger;
@@ -46,9 +46,9 @@ public class ScheduledTasks implements SchedulingConfigurer {
 
     @Override
     public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
-        final List<QuartzCronScheduler> cronJobs = cronJobRepository.findAll();
+        final List<openmrsPatientFeedForCraterJob> cronJobs = cronJobRepository.findAll();
 
-        for (final QuartzCronScheduler quartzCronScheduler : cronJobs) {
+        for (final openmrsPatientFeedForCraterJob quartzCronScheduler : cronJobs) {
             jobs.put(quartzCronScheduler.getName(), ((FeedJob) applicationContext.getBean(quartzCronScheduler.getName())));
 
             try {
@@ -61,7 +61,7 @@ public class ScheduledTasks implements SchedulingConfigurer {
         }
     }
 
-    private Trigger getTrigger(QuartzCronScheduler quartzCronScheduler) throws ParseException {
+    private Trigger getTrigger(openmrsPatientFeedForCraterJob quartzCronScheduler) throws ParseException {
         PeriodicTrigger periodicTrigger;
         Date now = new Date();
         long nextExecutionTimeByStatement = new CronExpression(quartzCronScheduler.getCronStatement()).getNextValidTimeAfter(now).getTime();
@@ -70,7 +70,7 @@ public class ScheduledTasks implements SchedulingConfigurer {
         return periodicTrigger;
     }
 
-    private Runnable getTask(final QuartzCronScheduler quartzCronScheduler) {
+    private Runnable getTask(final openmrsPatientFeedForCraterJob quartzCronScheduler) {
         return new Runnable() {
             @Override
             public void run() {

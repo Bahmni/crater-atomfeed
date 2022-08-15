@@ -2,6 +2,8 @@ package org.bahmni.module.feedintegration.atomfeed.contract.patient;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import static com.sun.org.apache.xml.internal.utils.LocaleUtility.EMPTY_STRING;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class OpenMRSPersonName {
     private String uuid;
@@ -59,5 +61,11 @@ public class OpenMRSPersonName {
                 ", familyName='" + familyName + '\'' +
                 ", voided=" + voided +
                 '}';
+    }
+
+    public String getPreferredFullName() {
+        return this.getGivenName()
+                + (this.getMiddleName() != null ? " " + this.getMiddleName() : EMPTY_STRING)
+                + " " + this.getFamilyName();
     }
 }

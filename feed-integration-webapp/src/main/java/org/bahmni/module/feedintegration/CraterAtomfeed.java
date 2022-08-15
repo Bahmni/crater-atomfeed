@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 @ComponentScan(basePackages = "org.bahmni.module.*")
 @EnableTransactionManagement
 public class CraterAtomfeed extends SpringBootServletInitializer {
-
     private static final Logger logger = LoggerFactory.getLogger(CraterAtomfeed.class);
 
     public static void main(String[] args) throws Exception {

@@ -11,11 +11,11 @@ import org.apache.http.util.EntityUtils;
 
 import org.bahmni.module.feedintegration.atomfeed.contract.patient.OpenMRSPatientFullRepresentation;
 import org.bahmni.module.feedintegration.atomfeed.contract.patient.OpenMRSPatientIdentifier;
-import org.bahmni.module.feedintegration.atomfeed.contract.patient.OpenMRSPersonName;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -27,16 +27,16 @@ import java.util.Optional;
 import static com.sun.org.apache.xml.internal.utils.LocaleUtility.EMPTY_STRING;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-public class CraterAPIcalls {
+
+@Component
+public class CraterAPIClient {
 
     private final CraterProperties properties = CraterProperties.getInstance();
-    CraterLogin craterLogin = new CraterLogin();
-    private final String auth = craterLogin.getToken();
+    static CraterLogin craterLogin = new CraterLogin();
 
-    private static final Logger logger = LoggerFactory.getLogger(CraterAPIcalls.class);
+    private static String auth = craterLogin.getToken();
 
-    public CraterAPIcalls() {
-    }
+    private static final Logger logger = LoggerFactory.getLogger(CraterAPIClient.class);
 
     public HttpURLConnection getConnection(String api, String httpMethod, String auth) throws IOException {
         URL url = new URL(properties.getUrl() + "/api/v1/" + api);
@@ -51,7 +51,7 @@ public class CraterAPIcalls {
         return con;
     }
 
-    public String login_verification(String auth) throws Exception {
+    public boolean login_verification(String auth) throws Exception {
         CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpGet request = new HttpGet(properties.getUrl() + "/api/v1/auth/check");
 
@@ -63,12 +63,14 @@ public class CraterAPIcalls {
         try (CloseableHttpResponse response = httpClient.execute(request)) {
             HttpEntity entity = response.getEntity();
             String result = EntityUtils.toString(entity);
-            return ((result.charAt(0) == '1') ? "Authenticated" : "Not Authenticated");
+            httpClient.close();
+            response.close();
+            return ((result.charAt(0) == '1') ? true : false);
         }
     }
 
     public void create_customer(OpenMRSPatientFullRepresentation patientFR, String auth) throws Exception {
-            String name = getname(patientFR);
+            String name = patientFR.getPerson().getPreferredName().getPreferredFullName();
             String uuid = getuuid(patientFR);
 
             HttpURLConnection con = getConnection("customers", "POST", auth);
@@ -87,7 +89,7 @@ public class CraterAPIcalls {
     }
 
     public void update_customer(OpenMRSPatientFullRepresentation patientFR, String auth) throws Exception {
-            String name = getname(patientFR);
+            String name = patientFR.getPerson().getPreferredName().getPreferredFullName();
             String uuid = getuuid(patientFR);
 
             String id = this.get_list_customers(uuid, auth);
@@ -105,7 +107,7 @@ public class CraterAPIcalls {
     }
 
     public String get_list_customers(String uuid, String auth) throws URISyntaxException, JSONException, IOException {
-        CloseableHttpClient httpclient = HttpClients.createDefault();
+        CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpUriRequest list_customers = RequestBuilder.get()
                 .setUri(new URI(properties.getUrl()+ "/api/v1/customers"))
                 .addParameter("contact_name", uuid)
@@ -116,8 +118,10 @@ public class CraterAPIcalls {
         list_customers.addHeader("Content-Type", "*/*");
         list_customers.addHeader("company", "1");
 
-        CloseableHttpResponse response = httpclient.execute(list_customers);
+        CloseableHttpResponse response = httpClient.execute(list_customers);
         JSONObject myObject = new JSONObject(EntityUtils.toString(response.getEntity()));
+        httpClient.close();
+        response.close();
 
         if (myObject.getJSONArray("data").length() == 0) {
             return "Customer not found";
@@ -128,7 +132,7 @@ public class CraterAPIcalls {
     }
 
     public void create_update(OpenMRSPatientFullRepresentation patientFR) throws Exception {
-        if (login_verification(auth).equals("Authenticated")) {
+        if (login_verification(auth)) {
             String uuid = getuuid(patientFR);
             if (get_list_customers(uuid, auth).equals("Customer not found")) {
                 create_customer(patientFR, auth);
@@ -147,12 +151,5 @@ public class CraterAPIcalls {
                 .findFirst();
 
         return uuid1.isPresent() ? uuid1.get().getIdentifier() : EMPTY_STRING;
-    }
-
-    public String getname(OpenMRSPatientFullRepresentation patientFR) {
-        OpenMRSPersonName preferredName = patientFR.getPerson().getPreferredName();
-        return preferredName.getGivenName()
-                + (preferredName.getMiddleName() != null ? " " + preferredName.getMiddleName() : EMPTY_STRING)
-                + " " + preferredName.getFamilyName();
     }
 }

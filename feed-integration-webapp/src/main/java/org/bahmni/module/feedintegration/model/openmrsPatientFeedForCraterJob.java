@@ -8,8 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "quartz_cron_scheduler")
-public class QuartzCronScheduler {
+@Table(name = "openmrsPatientFeedForCraterJob")
+public class openmrsPatientFeedForCraterJob {
 
     @Id
     @Column(name = "id", unique = true)
@@ -28,10 +28,10 @@ public class QuartzCronScheduler {
     @Column(name = "start_delay")
     private Integer startDelay;
 
-    public QuartzCronScheduler() {
+    public openmrsPatientFeedForCraterJob() {
     }
 
-    public QuartzCronScheduler(Integer id, String name, Boolean enabled, String cronStatement, Integer startDelay) {
+    public openmrsPatientFeedForCraterJob(Integer id, String name, Boolean enabled, String cronStatement, Integer startDelay) {
         this.id = id;
         this.name = name;
         this.enabled = enabled;

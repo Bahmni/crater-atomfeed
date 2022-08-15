@@ -19,9 +19,9 @@ import java.net.URISyntaxException;
 @Scope("singleton")
 public class CraterLogin {
 
-    private final String token;
+    private String token;
 
-    public CraterLogin() {
+    void CraterLogin() {
         try {
             CraterProperties properties = CraterProperties.getInstance();
             CloseableHttpClient httpclient = HttpClients.createDefault();

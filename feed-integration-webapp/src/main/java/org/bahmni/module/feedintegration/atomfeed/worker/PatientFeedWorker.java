@@ -1,6 +1,6 @@
 package org.bahmni.module.feedintegration.atomfeed.worker;
 
-import org.bahmni.module.feedintegration.crater.CraterAPIcalls;
+import org.bahmni.module.feedintegration.crater.CraterAPIClient;
 import org.bahmni.module.feedintegration.atomfeed.contract.patient.OpenMRSPatientFullRepresentation;
 import org.bahmni.module.feedintegration.services.OpenMRSService;
 import org.ict4h.atomfeed.client.domain.Event;
@@ -16,6 +16,8 @@ public class PatientFeedWorker implements EventWorker {
 
     @Autowired
     private OpenMRSService openMRSService;
+    @Autowired
+    CraterAPIClient craterAPIClient;
 
     public PatientFeedWorker() {
     }
@@ -26,8 +28,7 @@ public class PatientFeedWorker implements EventWorker {
             logger.info("Getting patient details ...");
             String patientUri = event.getContent();
             OpenMRSPatientFullRepresentation patientFR = openMRSService.getPatientFR(patientUri);
-            CraterAPIcalls crater = new CraterAPIcalls();
-            crater.create_update(patientFR);
+            craterAPIClient.create_update(patientFR);
         } catch (Exception e) {
             logger.error("Failed to fetch patient details", e);
             throw new RuntimeException("Failed to fetch patient details", e);

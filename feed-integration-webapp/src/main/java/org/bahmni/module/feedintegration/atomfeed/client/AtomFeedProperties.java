@@ -26,12 +26,10 @@ public class AtomFeedProperties {
 
         } catch (Exception e) {
         } finally {
-            if (null != propertyStream) {
-                try {
+            try {
                     propertyStream.close();
                     propertyStream = null;
                 } catch (Exception e) {
-                }
             }
 
         }
