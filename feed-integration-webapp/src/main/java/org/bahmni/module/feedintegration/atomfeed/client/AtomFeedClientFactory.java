@@ -59,7 +59,6 @@ public class AtomFeedClientFactory {
 
     private ClientCookies getCookies(HttpClient authenticatedWebClient, String urlString) {
         try {
-            ClientCookies k = authenticatedWebClient.getCookies(new URI(urlString));
             return authenticatedWebClient.getCookies(new URI(urlString));
         } catch (URISyntaxException e) {
             throw new RuntimeException("Is not a valid URI - " + urlString);

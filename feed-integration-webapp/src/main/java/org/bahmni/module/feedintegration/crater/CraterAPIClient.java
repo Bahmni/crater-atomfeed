@@ -15,6 +15,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
@@ -32,9 +33,12 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 public class CraterAPIClient {
 
     private final CraterProperties properties = CraterProperties.getInstance();
-    static CraterLogin craterLogin = new CraterLogin();
 
-    private static String auth = craterLogin.getToken();
+    private static String auth;
+    @Autowired
+    public CraterAPIClient(CraterLogin craterLogin){
+        this.auth = craterLogin.getToken();
+    }
 
     private static final Logger logger = LoggerFactory.getLogger(CraterAPIClient.class);
 

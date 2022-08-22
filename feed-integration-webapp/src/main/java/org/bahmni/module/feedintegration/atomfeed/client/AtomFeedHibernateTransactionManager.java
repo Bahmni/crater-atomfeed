@@ -37,12 +37,6 @@ public class AtomFeedHibernateTransactionManager implements AFTransactionManager
         propagationMap.put(AFTransactionWork.PropagationDefinition.PROPAGATION_REQUIRES_NEW, TransactionDefinition.PROPAGATION_REQUIRES_NEW);
     }
 
-    public AtomFeedHibernateTransactionManager(PlatformTransactionManager transactionManager) {
-        this.transactionManager = transactionManager;
-        propagationMap.put(AFTransactionWork.PropagationDefinition.PROPAGATION_REQUIRED, TransactionDefinition.PROPAGATION_REQUIRED);
-        propagationMap.put(AFTransactionWork.PropagationDefinition.PROPAGATION_REQUIRES_NEW, TransactionDefinition.PROPAGATION_REQUIRES_NEW);
-    }
-
     @Override
     public <T> T executeWithTransaction(final AFTransactionWork<T> action) throws RuntimeException {
         TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);

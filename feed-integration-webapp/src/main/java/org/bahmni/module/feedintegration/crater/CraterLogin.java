@@ -21,7 +21,7 @@ public class CraterLogin {
 
     private String token;
 
-    void CraterLogin() {
+    public CraterLogin() {
         try {
             CraterProperties properties = CraterProperties.getInstance();
             CloseableHttpClient httpclient = HttpClients.createDefault();
