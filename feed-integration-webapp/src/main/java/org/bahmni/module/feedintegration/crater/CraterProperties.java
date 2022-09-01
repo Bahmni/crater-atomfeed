@@ -42,7 +42,7 @@ public class CraterProperties {
 
     public static CraterProperties getInstance() {
         if (craterProperties == null) {
-            synchronized (AtomFeedProperties.class) {
+            synchronized (CraterProperties.class) {
                 if (craterProperties == null) {
                     craterProperties = new CraterProperties();
                 }
