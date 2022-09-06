@@ -1,17 +1,18 @@
-package org.bahmni.module.feedintegration.atomfeed;
+package org.bahmni.module.feedintegration;
 
+import org.hibernate.SessionFactory;
+import org.hibernate.jpa.HibernateEntityManagerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.bahmni.module.feedintegration.atomfeed.jobs.FeedJob;
 import org.bahmni.module.feedintegration.model.openmrsPatientFeedForCraterJob;
 import org.bahmni.module.feedintegration.repository.CronJobRepository;
 import org.quartz.CronExpression;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.Trigger;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 import org.springframework.scheduling.support.PeriodicTrigger;
@@ -25,9 +26,19 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.web.SpringBootServletInitializer;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@SpringBootApplication
+@ComponentScan(basePackages = "org.bahmni.module.*")
+@EnableTransactionManagement
 @Configuration
-@EnableScheduling
-public class ScheduledTasks implements SchedulingConfigurer {
+public class Application extends SpringBootServletInitializer implements SchedulingConfigurer{
 
     @Autowired
     private ApplicationContext applicationContext;
@@ -37,11 +48,31 @@ public class ScheduledTasks implements SchedulingConfigurer {
 
     private Map<String, FeedJob> jobs = new HashMap<String, FeedJob>();
 
-    private static Logger logger = LoggerFactory.getLogger(ScheduledTasks.class);
+    private static final Logger logger = LoggerFactory.getLogger(Application.class);
+
+    public static void main(String[] args) throws Exception {
+        logger.info("************ Starting Crater Atomfeed app **********");
+        SpringApplication.run(Application.class, args);
+        logger.info("************ Started Crater Atomfeed app **********");
+    }
+
+    @Bean
+    public SessionFactory sessionFactory(HibernateEntityManagerFactory hemf) {
+        return hemf.getSessionFactory();
+    }
 
     @Bean(destroyMethod = "shutdown")
     public Executor taskExecutor() {
         return Executors.newScheduledThreadPool(1);
+    }
+
+    private Trigger getTrigger(openmrsPatientFeedForCraterJob quartzCronScheduler) throws ParseException {
+        PeriodicTrigger periodicTrigger;
+        Date now = new Date();
+        long nextExecutionTimeByStatement = new CronExpression(quartzCronScheduler.getCronStatement()).getNextValidTimeAfter(now).getTime();
+        periodicTrigger = new PeriodicTrigger((int) (nextExecutionTimeByStatement - now.getTime()), TimeUnit.MILLISECONDS);
+        periodicTrigger.setInitialDelay(quartzCronScheduler.getStartDelay());
+        return periodicTrigger;
     }
 
     @Override
@@ -59,15 +90,6 @@ public class ScheduledTasks implements SchedulingConfigurer {
                 e.printStackTrace();
             }
         }
-    }
-
-    private Trigger getTrigger(openmrsPatientFeedForCraterJob quartzCronScheduler) throws ParseException {
-        PeriodicTrigger periodicTrigger;
-        Date now = new Date();
-        long nextExecutionTimeByStatement = new CronExpression(quartzCronScheduler.getCronStatement()).getNextValidTimeAfter(now).getTime();
-        periodicTrigger = new PeriodicTrigger((int) (nextExecutionTimeByStatement - now.getTime()), TimeUnit.MILLISECONDS);
-        periodicTrigger.setInitialDelay(quartzCronScheduler.getStartDelay());
-        return periodicTrigger;
     }
 
     private Runnable getTask(final openmrsPatientFeedForCraterJob quartzCronScheduler) {

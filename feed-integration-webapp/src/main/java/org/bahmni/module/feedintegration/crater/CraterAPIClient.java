@@ -16,6 +16,8 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
@@ -24,44 +26,69 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Optional;
+import java.util.Properties;
 
 import static com.sun.org.apache.xml.internal.utils.LocaleUtility.EMPTY_STRING;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 
 @Component
+@PropertySource("/crater.properties")
 public class CraterAPIClient {
 
-    private final CraterProperties properties = CraterProperties.getInstance();
+    //    private final CraterProperties properties = CraterProperties.getInstance();
 
-    private static String auth;
+    Properties properties;
+
+    String auth;
+
     @Autowired
     public CraterAPIClient(CraterLogin craterLogin){
         this.auth = craterLogin.getToken();
     }
+    @Value("${con.content_type}")
+    String content_type;
+
+    @Value("${con.accept}")
+    String accept;
+
+    @Value("${con.setDoOutput}")
+    String do_Output;
+
+    @Value("${con.setDoInput}")
+    String do_Input;
+
+    @Value("${crater.currencyid}")
+    String currencyId;
+
+    @Value("${crater.url}")
+    String crater_url;
+
+    @Value("${crater.company}")
+    String company;
 
     private static final Logger logger = LoggerFactory.getLogger(CraterAPIClient.class);
 
-    public HttpURLConnection getConnection(String api, String httpMethod, String auth) throws IOException {
-        URL url = new URL(properties.getUrl() + "/api/v1/" + api);
+    private HttpURLConnection getConnection(String api, String httpMethod, String auth) throws IOException {
+        URL url = new URL(crater_url + "/api/v1/" + api);
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod(httpMethod);
         con.setRequestProperty("Authorization", "Bearer " + auth);
-        con.setRequestProperty("Content-Type", properties.getContent_type());
-        con.setRequestProperty("Accept", properties.getAccept());
-        con.setRequestProperty("company", properties.getCompany());
-        con.setDoOutput(Boolean.parseBoolean(properties.getSetDoOutput()));
-        con.setDoInput(Boolean.parseBoolean(properties.getSetDoInput()));
+        con.setRequestProperty("Content-Type", content_type);
+        con.setRequestProperty("Accept", accept);
+        con.setRequestProperty("company", company);
+        con.setDoOutput(Boolean.parseBoolean(do_Output));
+        con.setDoInput(Boolean.parseBoolean(do_Input));
         return con;
     }
 
     public boolean login_verification(String auth) throws Exception {
         CloseableHttpClient httpClient = HttpClients.createDefault();
-        HttpGet request = new HttpGet(properties.getUrl() + "/api/v1/auth/check");
+        HttpGet request = new HttpGet(crater_url + "/api/v1/auth/check");
 
-        request.addHeader("Content-Type", properties.getContent_type());
-        request.addHeader("Accept", properties.getAccept());
-        request.addHeader("company", properties.getCompany());
+        request.addHeader("Content-Type", content_type);
+        request.addHeader("Accept", accept);
+        request.addHeader("company", company);
         request.addHeader("Authorization", "Bearer " + auth);
 
         try (CloseableHttpResponse response = httpClient.execute(request)) {
@@ -74,46 +101,46 @@ public class CraterAPIClient {
     }
 
     public void create_customer(OpenMRSPatientFullRepresentation patientFR, String auth) throws Exception {
-            String name = patientFR.getPerson().getPreferredName().getPreferredFullName();
-            String uuid = getuuid(patientFR);
+        String name = patientFR.getPerson().getPreferredName().getPreferredFullName();
+        String uuid = getuuid(patientFR);
 
-            HttpURLConnection con = getConnection("customers", "POST", auth);
+        HttpURLConnection con = getConnection("customers", "POST", auth);
 
-            JSONObject parameters = new JSONObject();
-            parameters.put("name", name);
-            parameters.put("contact_name", uuid);
-            parameters.put("currency_id", properties.getCurrencyid());
-            String jsonInputString = parameters.toString();
+        JSONObject parameters = new JSONObject();
+        parameters.put("name", name);
+        parameters.put("contact_name", uuid);
+        parameters.put("currency_id", currencyId);
+        String jsonInputString = parameters.toString();
 
-            try (OutputStream os = con.getOutputStream()) {
-                byte[] inputString = jsonInputString.getBytes(UTF_8);
-                os.write(inputString, 0, inputString.length);
-            }
-            con.getInputStream();
+        try (OutputStream os = con.getOutputStream()) {
+            byte[] inputString = jsonInputString.getBytes(UTF_8);
+            os.write(inputString, 0, inputString.length);
+        }
+        con.getInputStream();
     }
 
     public void update_customer(OpenMRSPatientFullRepresentation patientFR, String auth) throws Exception {
-            String name = patientFR.getPerson().getPreferredName().getPreferredFullName();
-            String uuid = getuuid(patientFR);
+        String name = patientFR.getPerson().getPreferredName().getPreferredFullName();
+        String uuid = getuuid(patientFR);
 
-            String id = this.get_list_customers(uuid, auth);
-            HttpURLConnection con = getConnection("customers/" + id, "PUT", auth);
+        String id = this.get_list_customers(uuid, auth);
+        HttpURLConnection con = getConnection("customers/" + id, "PUT", auth);
 
-            JSONObject parameters = new JSONObject();
-            parameters.put("name", name);
-            String jsonInputString = parameters.toString();
+        JSONObject parameters = new JSONObject();
+        parameters.put("name", name);
+        String jsonInputString = parameters.toString();
 
-            try (OutputStream os = con.getOutputStream()) {
-                byte[] inputString = jsonInputString.getBytes(UTF_8);
-                os.write(inputString, 0, inputString.length);
-            }
-            con.getInputStream();
+        try (OutputStream os = con.getOutputStream()) {
+            byte[] inputString = jsonInputString.getBytes(UTF_8);
+            os.write(inputString, 0, inputString.length);
+        }
+        con.getInputStream();
     }
 
     public String get_list_customers(String uuid, String auth) throws URISyntaxException, JSONException, IOException {
         CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpUriRequest list_customers = RequestBuilder.get()
-                .setUri(new URI(properties.getUrl()+ "/api/v1/customers"))
+                .setUri(new URI(crater_url+ "/api/v1/customers"))
                 .addParameter("contact_name", uuid)
                 .build();
 

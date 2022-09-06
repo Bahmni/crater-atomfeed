@@ -34,7 +34,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>org.bahmni.module.feedintegration.CraterAtomfeed</mainClass>
+                            <mainClass>org.bahmni.module.feedintegration.Application</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

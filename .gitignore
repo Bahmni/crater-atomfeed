@@ -6,3 +6,5 @@ test.log
 *.iml
 target/
 db/
+.classpath
+.project

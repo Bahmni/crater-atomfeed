@@ -8,6 +8,8 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -17,19 +19,30 @@ import java.net.URISyntaxException;
 
 @Component
 @Scope("singleton")
+@PropertySource("/crater.properties")
 public class CraterLogin {
 
     private String token;
 
+    @Value("${crater.url}")
+    String url;
+    @Value("${crater.device_name}")
+    String device_name;
+
+    @Value("${crater.username}")
+    String username;
+
+    @Value("${crater.password}")
+    String password;
+
     public CraterLogin() {
         try {
-            CraterProperties properties = CraterProperties.getInstance();
             CloseableHttpClient httpclient = HttpClients.createDefault();
             HttpUriRequest httppost = RequestBuilder.post()
-                    .setUri(new URI(properties.getUrl() + "/api/v1/auth/login"))
-                    .addParameter("username", properties.getUsername())
-                    .addParameter("password", properties.getPassword())
-                    .addParameter("device_name", properties.getDeviceName())
+                    .setUri(new URI(url + "/api/v1/auth/login"))
+                    .addParameter("username", username)
+                    .addParameter("password", password)
+                    .addParameter("device_name", device_name)
                     .build();
 
             httppost.addHeader("Content Type", "*/*");
