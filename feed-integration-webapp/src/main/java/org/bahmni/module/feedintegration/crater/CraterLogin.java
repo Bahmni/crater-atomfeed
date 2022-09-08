@@ -13,6 +13,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -35,9 +36,15 @@ public class CraterLogin {
     @Value("${crater.password}")
     String password;
 
-    public CraterLogin() {
+    @Value("${crater.company}")
+    String company;
+
+    @PostConstruct
+    public void innit() throws IOException {
+        CloseableHttpClient httpclient = null;
         try {
-            CloseableHttpClient httpclient = HttpClients.createDefault();
+            CloseableHttpResponse response;
+            httpclient = HttpClients.createDefault();
             HttpUriRequest httppost = RequestBuilder.post()
                     .setUri(new URI(url + "/api/v1/auth/login"))
                     .addParameter("username", username)
@@ -47,19 +54,21 @@ public class CraterLogin {
 
             httppost.addHeader("Content Type", "*/*");
             httppost.addHeader("Accept", "*/*");
-            httppost.addHeader("company", "*/*");
+            httppost.addHeader("company", company);
 
-            CloseableHttpResponse response = httpclient.execute(httppost);
+            response = httpclient.execute(httppost);
             String authString = EntityUtils.toString(response.getEntity());
             JSONObject authJSON = new JSONObject(authString);
             this.token = authJSON.getString("token");
             response.close();
-        }  catch (URISyntaxException e) {
+        } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         } catch (ClientProtocolException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {
             throw new RuntimeException(e);
+        } finally {
+            httpclient.close();
         }
     }
 

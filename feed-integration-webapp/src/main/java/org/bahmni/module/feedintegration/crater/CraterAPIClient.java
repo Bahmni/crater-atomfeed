@@ -20,13 +20,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Optional;
-import java.util.Properties;
 
 import static com.sun.org.apache.xml.internal.utils.LocaleUtility.EMPTY_STRING;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -35,10 +35,6 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 @Component
 @PropertySource("/crater.properties")
 public class CraterAPIClient {
-
-    //    private final CraterProperties properties = CraterProperties.getInstance();
-
-    Properties properties;
 
     String auth;
 

@@ -9,29 +9,47 @@ import org.ict4h.atomfeed.client.service.AtomFeedClient;
 import org.ict4h.atomfeed.client.service.EventWorker;
 import org.ict4h.atomfeed.client.service.FeedClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 
 @Component
+@PropertySource("/atomfeed.properties")
 public class AtomFeedClientFactory {
 
     @Autowired
     private AtomFeedHibernateTransactionManager transactionManager;
 
-    public FeedClient get(String feedName, EventWorker encounterFeedWorker) {
+    @Value("${feed.connectionTimeoutInMilliseconds}")
+    private String FEED_CONNECT_TIMEOUT;
+
+    @Value("${feed.replyTimeoutInMilliseconds}")
+    private String FEED_REPLY_TIMEOUT;
+
+    @Value("${feed.maxFailedEvents}")
+    private String FEED_MAX_FAILED_EVENTS;
+
+    @Value("${feed.failedEventMaxRetry}")
+    private String FAILED_EVENT_MAX_RETRY;
+
+    @Value("${openmrs.patient.feed.uri}")
+    private String uri;
+
+
+    public FeedClient get(EventWorker encounterFeedWorker) {
         HttpClient authenticatedWebClient = WebClientFactory.getClient();
         org.bahmni.webclients.ConnectionDetails connectionDetails = ConnectionDetails.get();
         String authUri = connectionDetails.getAuthUrl();
         ClientCookies cookies = getCookies(authenticatedWebClient, authUri);
         return getFeedClient(AtomFeedProperties.getInstance(),
-                feedName, encounterFeedWorker, cookies);
+                uri, encounterFeedWorker, cookies);
     }
 
-    private FeedClient getFeedClient(AtomFeedProperties atomFeedProperties, String feedName,
+    private FeedClient getFeedClient(AtomFeedProperties atomFeedProperties, String uri,
                                         EventWorker eventWorker, ClientCookies cookies) {
-        String uri = atomFeedProperties.getProperty(feedName);
         try {
             org.ict4h.atomfeed.client.AtomFeedProperties atomFeedClientProperties = createAtomFeedClientProperties(atomFeedProperties);
             
@@ -49,10 +67,10 @@ public class AtomFeedClientFactory {
 
     private org.ict4h.atomfeed.client.AtomFeedProperties createAtomFeedClientProperties(AtomFeedProperties atomFeedProperties) {
         org.ict4h.atomfeed.client.AtomFeedProperties feedProperties = new org.ict4h.atomfeed.client.AtomFeedProperties();
-        feedProperties.setConnectTimeout(Integer.parseInt(atomFeedProperties.getFeedConnectionTimeout()));
-        feedProperties.setReadTimeout(Integer.parseInt(atomFeedProperties.getFeedReplyTimeout()));
-        feedProperties.setMaxFailedEvents(Integer.parseInt(atomFeedProperties.getMaxFailedEvents()));
-        feedProperties.setFailedEventMaxRetry(Integer.parseInt(atomFeedProperties.getFailedEventMaxRetry()));
+        feedProperties.setConnectTimeout(Integer.parseInt(FEED_CONNECT_TIMEOUT));
+        feedProperties.setReadTimeout(Integer.parseInt(FEED_REPLY_TIMEOUT));
+        feedProperties.setMaxFailedEvents(Integer.parseInt(FEED_MAX_FAILED_EVENTS));
+        feedProperties.setFailedEventMaxRetry(Integer.parseInt(FAILED_EVENT_MAX_RETRY));
         feedProperties.setControlsEventProcessing(true);
         return feedProperties;
     }

@@ -5,7 +5,7 @@ import org.hibernate.jpa.HibernateEntityManagerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.bahmni.module.feedintegration.atomfeed.jobs.FeedJob;
-import org.bahmni.module.feedintegration.model.openmrsPatientFeedForCraterJob;
+import org.bahmni.module.feedintegration.model.OpenMRSPatientFeedForCraterJob;
 import org.bahmni.module.feedintegration.repository.CronJobRepository;
 import org.quartz.CronExpression;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +13,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.Trigger;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 import org.springframework.scheduling.support.PeriodicTrigger;
@@ -31,13 +32,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.web.SpringBootServletInitializer;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.web.bind.annotation.RestController;
 
-@RestController
 @SpringBootApplication
-@ComponentScan(basePackages = "org.bahmni.module.*")
+@ComponentScan(basePackages = "org.bahmni.module.feedintegration.*")
 @EnableTransactionManagement
 @Configuration
+@EnableScheduling
 public class Application extends SpringBootServletInitializer implements SchedulingConfigurer{
 
     @Autowired
@@ -66,7 +66,7 @@ public class Application extends SpringBootServletInitializer implements Schedul
         return Executors.newScheduledThreadPool(1);
     }
 
-    private Trigger getTrigger(openmrsPatientFeedForCraterJob quartzCronScheduler) throws ParseException {
+    private Trigger getTrigger(OpenMRSPatientFeedForCraterJob quartzCronScheduler) throws ParseException {
         PeriodicTrigger periodicTrigger;
         Date now = new Date();
         long nextExecutionTimeByStatement = new CronExpression(quartzCronScheduler.getCronStatement()).getNextValidTimeAfter(now).getTime();
@@ -77,9 +77,9 @@ public class Application extends SpringBootServletInitializer implements Schedul
 
     @Override
     public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
-        final List<openmrsPatientFeedForCraterJob> cronJobs = cronJobRepository.findAll();
+        final List<OpenMRSPatientFeedForCraterJob> cronJobs = cronJobRepository.findAll();
 
-        for (final openmrsPatientFeedForCraterJob quartzCronScheduler : cronJobs) {
+        for (final OpenMRSPatientFeedForCraterJob quartzCronScheduler : cronJobs) {
             jobs.put(quartzCronScheduler.getName(), ((FeedJob) applicationContext.getBean(quartzCronScheduler.getName())));
 
             try {
@@ -92,7 +92,7 @@ public class Application extends SpringBootServletInitializer implements Schedul
         }
     }
 
-    private Runnable getTask(final openmrsPatientFeedForCraterJob quartzCronScheduler) {
+    private Runnable getTask(final OpenMRSPatientFeedForCraterJob quartzCronScheduler) {
         return new Runnable() {
             @Override
             public void run() {

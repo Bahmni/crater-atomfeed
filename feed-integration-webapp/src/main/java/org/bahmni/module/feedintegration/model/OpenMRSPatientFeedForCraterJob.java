@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "openmrsPatientFeedForCraterJob")
-public class openmrsPatientFeedForCraterJob {
+public class OpenMRSPatientFeedForCraterJob {
 
     @Id
     @Column(name = "id", unique = true)
@@ -28,10 +28,10 @@ public class openmrsPatientFeedForCraterJob {
     @Column(name = "start_delay")
     private Integer startDelay;
 
-    public openmrsPatientFeedForCraterJob() {
+    public OpenMRSPatientFeedForCraterJob() {
     }
 
-    public openmrsPatientFeedForCraterJob(Integer id, String name, Boolean enabled, String cronStatement, Integer startDelay) {
+    public OpenMRSPatientFeedForCraterJob(Integer id, String name, Boolean enabled, String cronStatement, Integer startDelay) {
         this.id = id;
         this.name = name;
         this.enabled = enabled;

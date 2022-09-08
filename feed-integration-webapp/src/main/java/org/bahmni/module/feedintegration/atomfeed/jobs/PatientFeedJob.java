@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 @Component("openMRSPatientFeedJob")
 @ConditionalOnExpression("'${enable.scheduling}'=='true'")
 public class PatientFeedJob implements FeedJob {
-    private static final String OPENMRS_PATIENT_FEED_NAME = "openmrs.patient.feed.uri";
     private final Logger logger = LoggerFactory.getLogger(PatientFeedJob.class);
     private FeedClient atomFeedClient;
     private PatientFeedWorker patientFeedWorker;
@@ -26,10 +25,14 @@ public class PatientFeedJob implements FeedJob {
         this.atomFeedClientFactory = atomFeedClientFactory;
     }
 
+    public void innit(){
+
+    }
+
     @Override
     public void process() throws InterruptedException {
         if(atomFeedClient == null){
-            atomFeedClient = atomFeedClientFactory.get(OPENMRS_PATIENT_FEED_NAME, patientFeedWorker);
+            atomFeedClient = atomFeedClientFactory.get(patientFeedWorker);
         }
         logger.info("Processing feed...");
         atomFeedClient.processEvents();
