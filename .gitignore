@@ -1,0 +1,10 @@
+.idea/
+.java-version
+.DS_Store
+test.log
+--path
+*.iml
+target/
+db/
+.classpath
+.project
