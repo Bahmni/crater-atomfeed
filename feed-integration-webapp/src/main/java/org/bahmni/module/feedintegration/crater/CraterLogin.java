@@ -61,6 +61,7 @@ public class CraterLogin {
             JSONObject authJSON = new JSONObject(authString);
             this.token = authJSON.getString("token");
             response.close();
+            httpclient.close();
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         } catch (ClientProtocolException e) {
