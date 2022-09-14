@@ -33,7 +33,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 
 @Component
-@PropertySource("/crater.properties")
+@PropertySource("file:${HOME}/crater.properties")
 public class CraterAPIClient {
 
     String auth;

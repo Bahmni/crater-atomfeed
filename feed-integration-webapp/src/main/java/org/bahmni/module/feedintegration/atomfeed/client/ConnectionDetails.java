@@ -3,7 +3,7 @@ package org.bahmni.module.feedintegration.atomfeed.client;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 
-@PropertySource("/atomfeed.properties")
+@PropertySource("file:${HOME}/atomfeed.properties")
 public class ConnectionDetails {
 
     private static String AUTH_URI;
