@@ -11,7 +11,7 @@ RUN apk add gettext curl
 
 # bahmni-core.jar contains embedded tomcat server and is built from bahmni-package/core directory
 COPY package/resources/core-1.0-SNAPSHOT.jar /opt/crater-atomfeed/lib/crater-atomfeed.jar
-
+COPY feed-integration-webapp/target/crater-atomfeed.war /etc/crater-atomfeed/crater-atomfeed.war
 RUN mkdir -p ${WAR_DIRECTORY}
 RUN cd ${WAR_DIRECTORY} && jar xvf /etc/crater-atomfeed/crater-atomfeed.war
 
