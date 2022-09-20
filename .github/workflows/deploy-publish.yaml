@@ -23,8 +23,8 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: '8'
-      - name: Run Unit Tests
-        run: mvn --no-transfer-progress clean test
+      # - name: Run Unit Tests
+      #   run: mvn --no-transfer-progress clean test
       - name: Package war
         run: mvn --no-transfer-progress clean package -DskipTests
       - uses: actions/upload-artifact@v3
