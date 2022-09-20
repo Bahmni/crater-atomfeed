@@ -6,7 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RestController;
 
 @Controller
-@PropertySource("file:${HOME}/atomfeed.properties")
+@PropertySource("/atomfeed.properties")
 public class ConnectionDetails {
     private static String AUTH_URI;
     private static String OPENMRS_USER;
