@@ -1,22 +1,27 @@
 package org.bahmni.module.feedintegration;
 
-import org.hibernate.SessionFactory;
-import org.hibernate.jpa.HibernateEntityManagerFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.bahmni.module.feedintegration.atomfeed.jobs.FeedJob;
 import org.bahmni.module.feedintegration.model.OpenMRSPatientFeedForCraterJob;
 import org.bahmni.module.feedintegration.repository.CronJobRepository;
+import org.hibernate.SessionFactory;
+import org.hibernate.jpa.HibernateEntityManagerFactory;
 import org.quartz.CronExpression;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.web.SpringBootServletInitializer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.Trigger;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 import org.springframework.scheduling.support.PeriodicTrigger;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.text.ParseException;
 import java.util.Date;
@@ -27,18 +32,13 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.web.SpringBootServletInitializer;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
-
 @SpringBootApplication
 @ComponentScan(basePackages = "org.bahmni.module.feedintegration.*")
 @EnableTransactionManagement
 @Configuration
 @EnableScheduling
-public class Application extends SpringBootServletInitializer implements SchedulingConfigurer{
+public class Application extends SpringBootServletInitializer implements SchedulingConfigurer {
+    private static final Logger logger = LoggerFactory.getLogger(Application.class);
 
     @Autowired
     private ApplicationContext applicationContext;
@@ -47,8 +47,6 @@ public class Application extends SpringBootServletInitializer implements Schedul
     private CronJobRepository cronJobRepository;
 
     private Map<String, FeedJob> jobs = new HashMap<String, FeedJob>();
-
-    private static final Logger logger = LoggerFactory.getLogger(Application.class);
 
     public static void main(String[] args) throws Exception {
         logger.info("************ Starting Crater Atomfeed app **********");
@@ -61,18 +59,10 @@ public class Application extends SpringBootServletInitializer implements Schedul
         return hemf.getSessionFactory();
     }
 
+
     @Bean(destroyMethod = "shutdown")
     public Executor taskExecutor() {
         return Executors.newScheduledThreadPool(1);
-    }
-
-    private Trigger getTrigger(OpenMRSPatientFeedForCraterJob quartzCronScheduler) throws ParseException {
-        PeriodicTrigger periodicTrigger;
-        Date now = new Date();
-        long nextExecutionTimeByStatement = new CronExpression(quartzCronScheduler.getCronStatement()).getNextValidTimeAfter(now).getTime();
-        periodicTrigger = new PeriodicTrigger((int) (nextExecutionTimeByStatement - now.getTime()), TimeUnit.MILLISECONDS);
-        periodicTrigger.setInitialDelay(quartzCronScheduler.getStartDelay());
-        return periodicTrigger;
     }
 
     @Override
@@ -90,6 +80,15 @@ public class Application extends SpringBootServletInitializer implements Schedul
                 e.printStackTrace();
             }
         }
+    }
+
+    private Trigger getTrigger(OpenMRSPatientFeedForCraterJob quartzCronScheduler) throws ParseException {
+        PeriodicTrigger periodicTrigger;
+        Date now = new Date();
+        long nextExecutionTimeByStatement = new CronExpression(quartzCronScheduler.getCronStatement()).getNextValidTimeAfter(now).getTime();
+        periodicTrigger = new PeriodicTrigger((int) (nextExecutionTimeByStatement - now.getTime()), TimeUnit.MILLISECONDS);
+        periodicTrigger.setInitialDelay(quartzCronScheduler.getStartDelay());
+        return periodicTrigger;
     }
 
     private Runnable getTask(final OpenMRSPatientFeedForCraterJob quartzCronScheduler) {
