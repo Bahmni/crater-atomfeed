@@ -18,6 +18,7 @@ RUN cd ${WAR_DIRECTORY} && jar xvf /etc/crater-atomfeed/crater-atomfeed.war
 COPY package/docker/templates/atomfeed.properties.template /opt/crater-atomfeed/etc/atomfeed.properties.template
 COPY package/docker/templates/application.properties.template /opt/crater-atomfeed/etc/application.properties.template
 COPY package/docker/templates/crater.properties.template /opt/crater-atomfeed/etc/crater.properties.template
+COPY package/docker/templates/db.properties.template /opt/crater-atomfeed/etc/db.properties.template
 RUN curl -o wait-for.sh 'https://raw.githubusercontent.com/eficode/wait-for/v2.2.3/wait-for'
 COPY package/docker/scripts/start.sh start.sh
 RUN chmod +x start.sh 
