@@ -56,13 +56,24 @@
     <profiles>
         <profile>
             <id>local</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
             <build>
                 <filters>
                     <filter>${user.home}/db.properties</filter>
                 </filters>
+                <resources>
+                    <resource>
+                        <directory>src/main/resources</directory>
+                        <filtering>true</filtering>
+                    </resource>
+                </resources>
+            </build>
+        </profile>
+         <profile>
+            <id>db-property</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
                 <resources>
                     <resource>
                         <directory>src/main/resources</directory>

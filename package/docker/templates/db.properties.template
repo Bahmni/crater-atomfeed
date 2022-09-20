@@ -1,3 +1,0 @@
-database.url = jdbc:mysql://${CRATER_ATOMFEED_DB_HOST}:${CRATER_ATOMFEED_DB_PORT}/${CRATER_ATOMFEED_DB_NAME}
-database.username = ${CRATER_ATOMFEED_DB_USERNAME}
-database.password = ${CRATER_ATOMFEED_DB_PASSWORD}
