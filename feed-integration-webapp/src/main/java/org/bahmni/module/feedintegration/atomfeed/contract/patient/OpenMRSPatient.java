@@ -1,10 +1,29 @@
 package org.bahmni.module.feedintegration.atomfeed.contract.patient;
 
+import java.util.Date;
+
 public class OpenMRSPatient {
     private String patientId;
     private String givenName;
     private String middleName;
     private String familyName;
+    private Date birthDate;
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public Date getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
+    }
 
     public String getFamilyName() {
         return familyName;
@@ -37,5 +56,7 @@ public class OpenMRSPatient {
     public void setPatientId(String patientId) {
         this.patientId = patientId;
     }
+
+    private String gender;
 
 }

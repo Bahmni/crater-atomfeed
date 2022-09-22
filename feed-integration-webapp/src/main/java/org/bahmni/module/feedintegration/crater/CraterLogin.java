@@ -8,69 +8,45 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
 @Component
 @Scope("singleton")
-@PropertySource("/crater.properties")
 public class CraterLogin {
 
-    private String token;
+    private final String token;
 
-    @Value("${crater.url}")
-    String crater_url;
-
-    @Value("${crater.device_name}")
-    String device_name;
-
-    @Value("${crater.username}")
-    String username;
-
-    @Value("${crater.password}")
-    String password;
-
-    @Value("${crater.company}")
-    String company;
-
-    @PostConstruct
-    public void innit() throws IOException {
-        CloseableHttpClient httpclient = null;
+    public CraterLogin() {
         try {
-            CloseableHttpResponse response;
-            httpclient = HttpClients.createDefault();
+            CraterProperties properties = CraterProperties.getInstance();
+            CloseableHttpClient httpclient = HttpClients.createDefault();
             HttpUriRequest httppost = RequestBuilder.post()
-                    .setUri(new URI(crater_url + "/api/v1/auth/login"))
-                    .addParameter("username", username)
-                    .addParameter("password", password)
-                    .addParameter("device_name", device_name)
+                    .setUri(new URI(properties.getUrl() + "/api/v1/auth/login"))
+                    .addParameter("username", properties.getUsername())
+                    .addParameter("password", properties.getPassword())
+                    .addParameter("device_name", properties.getDeviceName())
                     .build();
 
             httppost.addHeader("Content Type", "*/*");
             httppost.addHeader("Accept", "*/*");
-            httppost.addHeader("company", company);
+            httppost.addHeader("company", "*/*");
 
-            response = httpclient.execute(httppost);
+            CloseableHttpResponse response = httpclient.execute(httppost);
             String authString = EntityUtils.toString(response.getEntity());
             JSONObject authJSON = new JSONObject(authString);
             this.token = authJSON.getString("token");
             response.close();
-            httpclient.close();
-        } catch (URISyntaxException e) {
+        }  catch (URISyntaxException e) {
             throw new RuntimeException(e);
         } catch (ClientProtocolException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {
             throw new RuntimeException(e);
-        } finally {
-            httpclient.close();
         }
     }
 

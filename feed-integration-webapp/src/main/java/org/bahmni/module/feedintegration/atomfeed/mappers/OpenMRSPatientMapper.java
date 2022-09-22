@@ -8,9 +8,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 public class OpenMRSPatientMapper {
     private ObjectMapper objectMapper;
+    private SimpleDateFormat dateOfBirthFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
     public OpenMRSPatientMapper() {
         this.objectMapper = ObjectMapperRepository.objectMapper;
@@ -24,6 +26,8 @@ public class OpenMRSPatientMapper {
         patient.setGivenName(jsonNode.path("person").path("preferredName").path("givenName").asText().replaceAll("[\\W&&[^-]]", " "));
         patient.setFamilyName(jsonNode.path("person").path("preferredName").path("familyName").asText().replaceAll("[\\W&&[^-]]", " "));
         patient.setMiddleName(jsonNode.path("person").path("preferredName").path("middleName").asText().replaceAll("[\\W&&[^-]]", " "));
+        patient.setGender(jsonNode.path("person").path("gender").asText());
+        patient.setBirthDate(dateOfBirthFormat.parse(jsonNode.path("person").path("birthdate").asText()));
 
         return patient;
     }

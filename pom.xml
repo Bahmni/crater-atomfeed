@@ -34,13 +34,14 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>org.bahmni.module.feedintegration.Application</mainClass>
+                            <mainClass>org.bahmni.module.feedintegration.CraterAtomfeed</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
             </plugin>
         </plugins>
     </build>
+
     <distributionManagement>
         <snapshotRepository>
             <id>repo.mybahmni.org</id>
