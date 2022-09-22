@@ -36,12 +36,12 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 @PropertySource("/crater.properties")
 public class CraterAPIClient {
 
-    String auth;
-
+    private static String auth;
     @Autowired
     public CraterAPIClient(CraterLogin craterLogin){
         this.auth = craterLogin.getToken();
     }
+
     @Value("${con.content_type}")
     String content_type;
 
@@ -49,10 +49,10 @@ public class CraterAPIClient {
     String accept;
 
     @Value("${con.setDoOutput}")
-    String do_Output;
+    boolean do_Output;
 
     @Value("${con.setDoInput}")
-    String do_Input;
+    boolean do_Input;
 
     @Value("${crater.currencyid}")
     String currencyId;
@@ -62,6 +62,7 @@ public class CraterAPIClient {
 
     @Value("${crater.company}")
     String company;
+
 
     private static final Logger logger = LoggerFactory.getLogger(CraterAPIClient.class);
 
@@ -73,8 +74,8 @@ public class CraterAPIClient {
         con.setRequestProperty("Content-Type", content_type);
         con.setRequestProperty("Accept", accept);
         con.setRequestProperty("company", company);
-        con.setDoOutput(Boolean.parseBoolean(do_Output));
-        con.setDoInput(Boolean.parseBoolean(do_Input));
+        con.setDoOutput(do_Output);
+        con.setDoInput(do_Input);
         return con;
     }
 
@@ -143,7 +144,7 @@ public class CraterAPIClient {
         list_customers.addHeader("Authorization", "Bearer " + auth);
         list_customers.addHeader("Accept", "*/*");
         list_customers.addHeader("Content-Type", "*/*");
-        list_customers.addHeader("company", "1");
+        list_customers.addHeader("company", company);
 
         CloseableHttpResponse response = httpClient.execute(list_customers);
         JSONObject myObject = new JSONObject(EntityUtils.toString(response.getEntity()));

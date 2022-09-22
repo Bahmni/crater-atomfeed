@@ -35,20 +35,16 @@ public class AtomFeedClientFactory {
     @Value("${feed.failedEventMaxRetry}")
     private String FAILED_EVENT_MAX_RETRY;
 
-    @Value("${openmrs.patient.feed.uri}")
-    private String uri;
-
-
-    public FeedClient get(EventWorker encounterFeedWorker) {
+    public FeedClient get(String feedName, EventWorker encounterFeedWorker) {
         HttpClient authenticatedWebClient = WebClientFactory.getClient();
         org.bahmni.webclients.ConnectionDetails connectionDetails = ConnectionDetails.get();
         String authUri = connectionDetails.getAuthUrl();
         ClientCookies cookies = getCookies(authenticatedWebClient, authUri);
         return getFeedClient(AtomFeedProperties.getInstance(),
-                uri, encounterFeedWorker, cookies);
+                feedName, encounterFeedWorker, cookies);
     }
 
-    private FeedClient getFeedClient(AtomFeedProperties atomFeedProperties, String uri,
+    private FeedClient getFeedClient(AtomFeedProperties atomFeedProperties, String feedName,
                                         EventWorker eventWorker, ClientCookies cookies) {
         try {
             org.ict4h.atomfeed.client.AtomFeedProperties atomFeedClientProperties = createAtomFeedClientProperties(atomFeedProperties);
@@ -58,10 +54,10 @@ public class AtomFeedClientFactory {
             AllFailedEventsJdbcImpl allFailedEvents = new AllFailedEventsJdbcImpl(transactionManager);
 
             return new AtomFeedClient(allFeeds, allMarkers, allFailedEvents,
-                    atomFeedClientProperties, transactionManager, new URI(uri), eventWorker);
+                    atomFeedClientProperties, transactionManager, new URI(feedName), eventWorker);
             
         } catch (URISyntaxException e) {
-            throw new RuntimeException(String.format("Is not a valid URI - %s", uri));
+            throw new RuntimeException(String.format("Is not a valid URI - %s", feedName));
         }
     }
 
