@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 @DisallowConcurrentExecution
 @Component("openMRSPatientFeedJob")
 @ConditionalOnExpression("'${enable.scheduling}'=='true'")
-@PropertySource("/atomfeed.properties")
+@PropertySource("classpath:atomfeed.properties")
 public class PatientFeedJob implements FeedJob {
 
     @Value("${openmrs.patient.feed.uri}")

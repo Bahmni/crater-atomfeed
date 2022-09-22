@@ -17,7 +17,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 @Component
-@PropertySource("/atomfeed.properties")
+@PropertySource("classpath:atomfeed.properties")
 public class AtomFeedClientFactory {
 
     @Autowired

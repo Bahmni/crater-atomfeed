@@ -20,7 +20,7 @@ import java.net.URISyntaxException;
 
 @Component
 @Scope("singleton")
-@PropertySource("/crater.properties")
+@PropertySource("classpath:crater.properties")
 public class CraterLogin {
 
     private String token;
