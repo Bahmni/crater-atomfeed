@@ -8,9 +8,7 @@ ENV DEBUG_OPTS="-agentlib:jdwp=transport=dt_socket,address=8002,server=y,suspend
 
 # Used by envsubst command for replacing environment values at runtime
 RUN apk add gettext curl
-
-# bahmni-core.jar contains embedded tomcat server and is built from bahmni-package/core directory
-COPY package/resources/core-1.0-SNAPSHOT.jar /opt/crater-atomfeed/lib/crater-atomfeed.jar
+ADD https://repo.mybahmni.org/packages/build/bahmni-embedded-tomcat-8.0.42.jar /opt/crater-atomfeed/lib/crater-atomfeed.jar
 COPY feed-integration-webapp/target/crater-atomfeed.war /etc/crater-atomfeed/crater-atomfeed.war
 RUN mkdir -p ${WAR_DIRECTORY}
 RUN cd ${WAR_DIRECTORY} && jar xvf /etc/crater-atomfeed/crater-atomfeed.war
