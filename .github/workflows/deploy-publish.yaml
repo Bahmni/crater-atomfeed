@@ -4,6 +4,7 @@ on:
     branches:
       - main
       - 'release-*'
+      - BAH-1938
       
     tags:
       - '[0-9]+.[0-9]+.[0-9]+'
