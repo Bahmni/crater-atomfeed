@@ -1,0 +1,140 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}
+  labels:
+    app: {{ .Chart.Name }}
+    environment: {{ .Values.metadata.labels.environment }}
+
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.nginxReplicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}-nginx
+      environment: {{ .Values.metadata.labels.environment }}
+  revisionHistoryLimit: 5
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}-nginx
+        environment: {{ .Values.metadata.labels.environment }}
+    spec:
+      {{ if or .Values.global.nodeSelector .Values.nodeSelector }}
+      nodeSelector:
+      {{ if .Values.nodeSelector }}
+      {{ .Values.nodeSelector | toYaml | nindent 8}}
+      {{ else }}
+      {{.Values.global.nodeSelector | toYaml | nindent 8}}
+      {{ end }}
+      {{ end }}
+
+      {{ if or .Values.global.affinity .Values.affinity }}
+      affinity:
+      {{ if .Values.affinity }}
+      {{ .Values.affinity | toYaml | nindent 8}}
+      {{ else }}
+      {{.Values.global.affinity | toYaml | nindent 8}}
+      {{ end }}
+      {{ end }}
+
+      {{ if or .Values.global.tolerations .Values.tolerations }}
+      tolerations:
+      {{ if .Values.tolerations }}
+      {{ .Values.tolerations | toYaml | nindent 8}}
+      {{ else }}
+      {{.Values.global.tolerations | toYaml | nindent 8}}
+      {{ end }}
+      {{ end }}
+
+      containers:
+        - name: {{ .Chart.Name }}-nginx
+          image: "{{ .Values.image.repository }}/{{ .Values.image.nginx.name }}:{{ .Values.image.nginx.tag }}"
+          resources: {}
+          ports:
+            - containerPort: {{ .Values.service.nginx.port }}
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /var/www/public/storage
+              name: crater-app-data
+      restartPolicy: Always
+
+      volumes:
+        - name: crater-app-data
+          persistentVolumeClaim:
+            claimName: crater-app-data-pvc
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}-php
+  labels:
+    app: {{ .Chart.Name }}-php
+    environment: {{ .Values.metadata.labels.environment }}
+
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.phpReplicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}-php
+      environment: {{ .Values.metadata.labels.environment }}
+  revisionHistoryLimit: 5
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}-php
+        environment: {{ .Values.metadata.labels.environment }}
+    spec:
+      {{ if or .Values.global.nodeSelector .Values.nodeSelector }}
+      nodeSelector:
+      {{ if .Values.nodeSelector }}
+      {{ .Values.nodeSelector | toYaml | nindent 8}}
+      {{ else }}
+      {{.Values.global.nodeSelector | toYaml | nindent 8}}
+      {{ end }}
+      {{ end }}
+
+      {{ if or .Values.global.affinity .Values.affinity }}
+      affinity:
+      {{ if .Values.affinity }}
+      {{ .Values.affinity | toYaml | nindent 8}}
+      {{ else }}
+      {{.Values.global.affinity | toYaml | nindent 8}}
+      {{ end }}
+      {{ end }}
+
+      {{ if or .Values.global.tolerations .Values.tolerations }}
+      tolerations:
+      {{ if .Values.tolerations }}
+      {{ .Values.tolerations | toYaml | nindent 8}}
+      {{ else }}
+      {{.Values.global.tolerations | toYaml | nindent 8}}
+      {{ end }}
+      {{ end }}
+
+      containers:
+        - name: {{ .Chart.Name }}-php
+          image: "{{ .Values.image.repository }}/{{ .Values.image.php.name }}:{{ .Values.image.php.tag }}"
+          resources: {}
+          workingDir: /var/www/
+          envFrom:
+            - configMapRef:
+                name: {{ .Chart.Name }}-config
+                optional: false
+            - secretRef:
+                name: {{.Chart.Name }}-secrets
+                optional: false
+          volumeMounts:
+            - mountPath: /var/www/storage/app/public
+              name: crater-app-data
+      restartPolicy: Always
+
+      volumes:
+        - name: crater-app-data
+          persistentVolumeClaim:
+            claimName: crater-app-data-pvc
