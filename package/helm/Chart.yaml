@@ -1,5 +1,5 @@
 apiVersion: v2
-name: crater_atomfeed
+name: crater-atomfeed
 description: A Helm chart for crater-atomfeed
 type: application
 version: 1.0.0

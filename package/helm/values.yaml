@@ -32,8 +32,8 @@ config:
      
 
 secrets:
-  OPENMRS_ATOMFEED_USER: "admin"
-  OPENMRS_ATOMFEED_PASSWORD: "test"
+  OPENMRS_ATOMFEED_USER: "superman"
+  OPENMRS_ATOMFEED_PASSWORD: "Admin123"
   # CRATER_ATOMFEED_DB_PORT: 
   CRATER_USERNAME: "superman@bahmni.org"
   CRATER_PASSWORD: "Crater123"

@@ -64,7 +64,7 @@ jobs:
           persist-credentials: false
 
       - name: Copy Helm Archive
-        run: cp crater_atomfeed-${{ env.ARTIFACT_VERSION }}.tgz helm-charts/crater-atomfeed/
+        run: cp crater-atomfeed-${{ env.ARTIFACT_VERSION }}.tgz helm-charts/crater-atomfeed/
 
       - name: Helm Index
         working-directory: helm-charts/
