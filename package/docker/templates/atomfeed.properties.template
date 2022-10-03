@@ -7,10 +7,10 @@ feed.replyTimeoutInMilliseconds=20000
 feed.maxFailedEvents=10000
 feed.failedEventMaxRetry=10
 #OpenMRS data specific properties
-openmrs.auth.uri=http://openmrs/openmrs/ws/rest/v1/session
-openmrs.patient.feed.uri=http://openmrs/openmrs/ws/atomfeed/patient/recent
-openmrs.encounter.feed.uri=https://openmrs/openmrs/ws/atomfeed/encounter/recent
-openmrs.user=admin
-openmrs.password=test
+openmrs.auth.uri=http://${OPENMRS_HOST}:${OPENMRS_PORT}/openmrs/ws/rest/v1/session
+openmrs.patient.feed.uri=http://${OPENMRS_HOST}:${OPENMRS_PORT}/openmrs/ws/atomfeed/patient/recent
+openmrs.encounter.feed.uri=https://${OPENMRS_HOST}:${OPENMRS_PORT}/openmrs/ws/atomfeed/encounter/recent
+openmrs.user=${OPENMRS_ATOMFEED_USER}
+openmrs.password=${OPENMRS_ATOMFEED_PASSWORD}
 openmrs.connectionTimeoutInMilliseconds=10000
 openmrs.replyTimeoutInMilliseconds=20000
