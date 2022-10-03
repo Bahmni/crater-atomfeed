@@ -3,8 +3,8 @@ con.accept  = application/json
 con.setDoOutput = true
 con.setDoInput = true
 
-crater.currencyid = 13 #for INR
-crater.url = https://demo.craterapp.com
+crater.currencyid = 13
+crater.url = ${CRATER_URL}
 crater.company = 1
 crater.device_name = mobile_device
 crater.username = ${CRATER_USERNAME}
