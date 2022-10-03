@@ -25,7 +25,7 @@ service:
 config:
   CRATER_ATOMFEED_DB_HOST: ""
   OPENMRS_HOST: "openmrs"
-  CRATER_URL: "crater"
+  CRATER_URL: "http://crater-nginx"
   CRATER_ATOMFEED_DB_NAME: "crater_atomfeed"
   OPENMRS_PORT: "8080"
      
@@ -34,8 +34,8 @@ secrets:
   OPENMRS_ATOMFEED_USER: "admin"
   OPENMRS_ATOMFEED_PASSWORD: "test"
   # CRATER_ATOMFEED_DB_PORT: 
-  CRATER_USERNAME: "admin@craterapp.com"
-  CRATER_PASSWORD: "crater@123"
+  CRATER_USERNAME: "superman@bahmni.org"
+  CRATER_PASSWORD: "Crater123"
   CRATER_ATOMFEED_DB_USERNAME: "beehyv"
   CRATER_ATOMFEED_DB_PASSWORD: "beehyv123"
 
