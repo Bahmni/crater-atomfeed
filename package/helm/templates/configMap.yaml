@@ -8,4 +8,5 @@ data:
   CRATER_URLT:  "{{ .Values.config.CRATER_URL }}"
   CRATER_ATOMFEED_DB_NAME:  "{{ .Values.config.CRATER_ATOMFEED_DB_NAME }}"
   OPENMRS_PORT: "{{ .Values.config.OPENMRS_PORT }}"
+  CRATER_ATOMFEED_DB_PORT:  "{{ .Values.config.CRATER_ATOMFEED_DB_PORT }}"
   
