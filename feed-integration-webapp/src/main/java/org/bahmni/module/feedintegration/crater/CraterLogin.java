@@ -20,13 +20,14 @@ import java.net.URISyntaxException;
 
 @Component
 @Scope("singleton")
-@PropertySource("/crater.properties")
+@PropertySource("classpath:crater.properties")
 public class CraterLogin {
 
     private String token;
 
     @Value("${crater.url}")
-    String url;
+    String crater_url;
+
     @Value("${crater.device_name}")
     String device_name;
 
@@ -46,7 +47,7 @@ public class CraterLogin {
             CloseableHttpResponse response;
             httpclient = HttpClients.createDefault();
             HttpUriRequest httppost = RequestBuilder.post()
-                    .setUri(new URI(url + "/api/v1/auth/login"))
+                    .setUri(new URI(crater_url + "/api/v1/auth/login"))
                     .addParameter("username", username)
                     .addParameter("password", password)
                     .addParameter("device_name", device_name)
@@ -61,6 +62,7 @@ public class CraterLogin {
             JSONObject authJSON = new JSONObject(authString);
             this.token = authJSON.getString("token");
             response.close();
+            httpclient.close();
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         } catch (ClientProtocolException e) {
