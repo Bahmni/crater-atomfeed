@@ -46,6 +46,3 @@ nodeSelector: {}
 affinity: {}
 tolerations: {}
 
-volumes:
-  craterAppData:
-    capacity: 8Gi

@@ -4,9 +4,9 @@ metadata:
   name: {{ .Chart.Name }}-config
 data:
   CRATER_ATOMFEED_DB_HOST: "{{ .Values.config.CRATER_ATOMFEED_DB_HOST }}"
-  OPENMRS_HOST: "{{ .Values.config.OPENMRS_HOST }}"
-  CRATER_URL:  "{{ .Values.config.CRATER_URL }}"
   CRATER_ATOMFEED_DB_NAME:  "{{ .Values.config.CRATER_ATOMFEED_DB_NAME }}"
-  OPENMRS_PORT: "{{ .Values.config.OPENMRS_PORT }}"
   CRATER_ATOMFEED_DB_PORT:  "{{ .Values.config.CRATER_ATOMFEED_DB_PORT }}"
+  CRATER_URL:  "{{ .Values.config.CRATER_URL }}"
+  OPENMRS_HOST: "{{ .Values.config.OPENMRS_HOST }}"
+  OPENMRS_PORT: "{{ .Values.config.OPENMRS_PORT }}"
   
