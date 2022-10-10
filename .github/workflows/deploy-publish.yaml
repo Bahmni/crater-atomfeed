@@ -18,7 +18,7 @@ jobs:
      HELM_CHART_PATH: package/helm
     steps:
       - uses: actions/checkout@v2
-      - name: Set artifact version
+      - name: Set env.ARTIFACT_VERSION version
         run: |
           wget -q https://raw.githubusercontent.com/Bahmni/bahmni-infra-utils/main/setArtifactVersion.sh && chmod +x setArtifactVersion.sh
           ./setArtifactVersion.sh

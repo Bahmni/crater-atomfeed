@@ -8,7 +8,7 @@ metadata:
 
 spec:
   {{- if not .Values.autoscaling.enabled }}
-  replicas: {{ .Values.nginxReplicaCount }}
+  replicas: {{ .Values.ReplicaCount }}
   {{- end }}
   selector:
     matchLabels:

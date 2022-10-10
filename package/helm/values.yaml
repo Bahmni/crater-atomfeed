@@ -4,9 +4,7 @@ global:
   tolerations: {}
   storageClass: ""
 
-nginxReplicaCount: 1
-
-phpReplicaCount: 1
+ReplicaCount: 1
 
 metadata:
   labels:
