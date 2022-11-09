@@ -54,7 +54,7 @@ public class CraterAPIClient {
     @Value("${con.setDoInput}")
     boolean do_Input;
 
-    @Value("${crater.currencyid}")
+    @Value("${crater.currency.id}")
     String currencyId;
 
     @Value("${crater.url}")
@@ -125,6 +125,7 @@ public class CraterAPIClient {
 
         JSONObject parameters = new JSONObject();
         parameters.put("name", name);
+        parameters.put("currency_id", currencyId);
         String jsonInputString = parameters.toString();
 
         try (OutputStream os = con.getOutputStream()) {

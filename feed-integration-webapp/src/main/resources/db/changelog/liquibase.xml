@@ -133,10 +133,11 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="3" author="Bahmni">
+    <changeSet id="3" author="Bahmni" runOnChange="true">
         <comment>Adding schedulers for openmrs patient</comment>
         <sql>
             insert into openmrs_patient_feed_for_crater_job (name, cron_statement, start_delay, enabled) values ('openMRSPatientFeedJob', '0/15 * * * * ?', 0, true);
+            insert into openmrs_patient_feed_for_crater_job (name, cron_statement, start_delay, enabled) values ('openMRSPatientFailedFeedJob', '0/15 * * * * ?', 0, true);
         </sql>
     </changeSet>
 </databaseChangeLog>
