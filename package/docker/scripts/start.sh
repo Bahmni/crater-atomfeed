@@ -1,11 +1,6 @@
 #!/bin/sh
 set -e
 
-echo "[INFO] Substituting Environment Variables"
-envsubst < /opt/crater-atomfeed/etc/atomfeed.properties.template > ${WAR_DIRECTORY}/WEB-INF/classes/atomfeed.properties
-envsubst < /opt/crater-atomfeed/etc/application.properties.template > ${WAR_DIRECTORY}/WEB-INF/classes/application.properties
-envsubst < /opt/crater-atomfeed/etc/crater.properties.template > ${WAR_DIRECTORY}/WEB-INF/classes/crater.properties
-
 echo "Waiting for ${CRATER_ATOMFEED_DB_HOST}.."
 sh wait-for.sh -t 300 "${CRATER_ATOMFEED_DB_HOST}":"${CRATER_ATOMFEED_DB_PORT}"
 
@@ -13,4 +8,4 @@ echo "Waiting for ${OPENMRS_HOST}.."
 sh wait-for.sh -t 3600 "${OPENMRS_HOST}":"${OPENMRS_PORT}"
 
 echo "[INFO] Starting Application"
-java -jar $SERVER_OPTS $DEBUG_OPTS /opt/crater-atomfeed/lib/crater-atomfeed.jar
+java -jar crater-atomfeed.jar --crater.atomfeed.db.host=$CRATER_ATOMFEED_DB_HOST --crater.atomfeed.db.port=$CRATER_ATOMFEED_DB_PORT --crater.atomfeed.db.name=$CRATER_ATOMFEED_DB_NAME --crater.atomfeed.db.username=$CRATER_ATOMFEED_DB_USERNAME --crater.atomfeed.db.password=$CRATER_ATOMFEED_DB_PASSWORD --crater.url=$CRATER_URL --crater.username=$CRATER_USERNAME --crater.password=$CRATER_PASSWORD --openmrs.host=$OPENMRS_HOST --openmrs.port=$OPENMRS_PORT --openmrs.user=$OPENMRS_ATOMFEED_USER --openmrs.password=$OPENMRS_ATOMFEED_PASSWORD
