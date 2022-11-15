@@ -9,7 +9,7 @@
     </parent>
     <artifactId>crater-atomfeed-webapp</artifactId>
     <modelVersion>4.0.0</modelVersion>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
     <build>
         <plugins>
             <plugin>
