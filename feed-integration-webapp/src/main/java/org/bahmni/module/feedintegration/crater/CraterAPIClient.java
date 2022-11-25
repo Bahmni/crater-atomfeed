@@ -21,6 +21,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.methods.RequestBuilder;
@@ -74,19 +75,6 @@ public class CraterAPIClient {
 
 	private static final Logger logger = LoggerFactory.getLogger(CraterAPIClient.class);
 
-	private HttpURLConnection getConnection(String api, String httpMethod, String auth) throws IOException {
-		URL url = new URL(crater_url + "/api/v1/" + api);
-		HttpURLConnection con = (HttpURLConnection) url.openConnection();
-		con.setRequestMethod(httpMethod);
-		con.setRequestProperty("Authorization", "Bearer " + auth);
-		con.setRequestProperty("Content-Type", content_type);
-		con.setRequestProperty("Accept", accept);
-		con.setRequestProperty("company", company);
-		con.setDoOutput(do_Output);
-		con.setDoInput(do_Input);
-		return con;
-	}
-
 	public boolean login_verification(String auth) throws Exception {
 		CloseableHttpClient httpClient = HttpClients.createDefault();
 		HttpGet request = new HttpGet(crater_url + "/api/v1/auth/check");
@@ -118,11 +106,13 @@ public class CraterAPIClient {
 		nameValuePairs.add(new BasicNameValuePair("currency_id", currencyId));
 		URI uri = new URIBuilder(request.getURI()).setParameters(nameValuePairs).build();
 		((HttpRequestBase) request).setURI(uri);
+		logger.info("URI :{}",uri);
 		request.addHeader("Content-Type", content_type);
 		request.addHeader("Accept", accept);
 		request.addHeader("company", company);
 		request.addHeader("Authorization", "Bearer " + auth);
 		response = httpClient.execute(request);
+		logger.debug("Status Code  : {}", response.getStatusLine().getStatusCode());
 		response.close();
 		httpClient.close();
 
@@ -133,18 +123,26 @@ public class CraterAPIClient {
 		String uuid = getuuid(patientFR);
 
 		String id = this.get_list_customers(uuid, auth);
-		HttpURLConnection con = getConnection("customers/" + id, "PUT", auth);
+		
+		CloseableHttpResponse response;
+		CloseableHttpClient httpClient = HttpClients.createDefault();
+		HttpPut request = new HttpPut(crater_url + "/api/v1/customers/"+id);	
+		
+		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		nameValuePairs.add(new BasicNameValuePair("name", name));
+		nameValuePairs.add(new BasicNameValuePair("currency_id", currencyId));
+		URI uri = new URIBuilder(request.getURI()).setParameters(nameValuePairs).build();
+		((HttpRequestBase) request).setURI(uri);
+		logger.info("URI :{}",uri);
+		request.addHeader("Content-Type", content_type);
+		request.addHeader("Accept", accept);
+		request.addHeader("company", company);
+		request.addHeader("Authorization", "Bearer " + auth);
+		response = httpClient.execute(request);
+		logger.info("Status Code  : {}", response.getStatusLine().getStatusCode());
+		response.close();
+		httpClient.close();
 
-		JSONObject parameters = new JSONObject();
-		parameters.put("name", name);
-		parameters.put("currency_id", currencyId);
-		String jsonInputString = parameters.toString();
-
-		try (OutputStream os = con.getOutputStream()) {
-			byte[] inputString = jsonInputString.getBytes(UTF_8);
-			os.write(inputString, 0, inputString.length);
-		}
-		con.getInputStream();
 	}
 
 	public String get_list_customers(String uuid, String auth) throws URISyntaxException, JSONException, IOException {
@@ -191,6 +189,6 @@ public class CraterAPIClient {
                 .filter(OpenMRSPatientIdentifier::isPreferred)
                 .findFirst();
 
-        return uuid1.isPresent() ? uuid1.get().getIdentifier() : EMPTY_STRING;
+        return uuid1.isPresent() ? uuid1.get().getIdentifier() : "";
 	}
 }
