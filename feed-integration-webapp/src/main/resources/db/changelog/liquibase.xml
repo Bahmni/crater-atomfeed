@@ -28,8 +28,8 @@
             </not>
         </preConditions>
         <createTable tableName="failed_events">
-            <column name="id" type="serial">
-                <constraints nullable="false" primaryKey="true"/>
+            <column name="id" type="serial" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true" />
             </column>
             <column name="feed_uri" type="varchar(255)"/>
             <column name="failed_at" type="timestamp"/>
