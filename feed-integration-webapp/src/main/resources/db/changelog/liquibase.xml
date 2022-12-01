@@ -74,7 +74,7 @@
             </not>
         </preConditions>
         <createTable tableName="failed_event_retry_log">
-            <column name="id" type="serial">
+            <column name="id" type="serial" autoIncrement="true" >
                 <constraints nullable="false" primaryKey="true"/>
             </column>
             <column name="feed_uri" type="varchar(255)"/>

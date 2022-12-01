@@ -37,8 +37,6 @@ public class PatientFeedJob implements FeedJob {
         if(atomFeedClient == null){
             atomFeedClient = atomFeedClientFactory.get(PATIENT_FEED_URI, patientFeedWorker);
         }
-        logger.info("Processing feed...");
         atomFeedClient.processEvents();
-        logger.info("Completed processing feed...");
     }
 }
