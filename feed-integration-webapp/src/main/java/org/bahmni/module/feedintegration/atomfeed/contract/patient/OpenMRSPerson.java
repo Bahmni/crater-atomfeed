@@ -2,7 +2,6 @@ package org.bahmni.module.feedintegration.atomfeed.contract.patient;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import java.util.Date;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -12,11 +11,11 @@ public class OpenMRSPerson {
 
     private OpenMRSPersonName preferredName;
     private List<OpenMRSPersonName> names;
-
+    private OpenMRSPersonAddress preferredAddress;
     private List<OpenMRSPersonAttribute> attributes;
 
 
-    public String getUuid() {
+	public String getUuid() {
         return uuid;
     }
 
@@ -44,22 +43,25 @@ public class OpenMRSPerson {
         this.names = names;
     }
 
-    public List<OpenMRSPersonAttribute> getAttributes() {
-        return attributes;
-    }
+	public List<OpenMRSPersonAttribute> getAttributes() {
+		return attributes;
+	}
 
-    public void setAttributes(List<OpenMRSPersonAttribute> attributes) {
-        this.attributes = attributes;
-    }
+	public void setAttributes(List<OpenMRSPersonAttribute> attributes) {
+		this.attributes = attributes;
+	}
 
-    @Override
-    public String toString() {
-        return "OpenMRSPerson{" +
-                "uuid='" + uuid + '\'' +
-                ", display='" + display + '\'' +
-                ", preferredName=" + preferredName +
-                ", names=" + names +
-                ", attributes=" + attributes +
-                '}';
-    }
+	public OpenMRSPersonAddress getPreferredAddress() {
+		return preferredAddress;
+	}
+
+	public void setPreferredAddress(OpenMRSPersonAddress preferredAddress) {
+		this.preferredAddress = preferredAddress;
+	}
+
+	@Override
+	public String toString() {
+		return "OpenMRSPerson [uuid=" + uuid + ", display=" + display + ", preferredName=" + preferredName + ", names="
+				+ names + ", preferredAddress=" + preferredAddress + ", attributes=" + attributes + "]";
+	}
 }

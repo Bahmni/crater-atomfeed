@@ -1,17 +1,8 @@
 package org.bahmni.module.feedintegration.crater;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +23,8 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.bahmni.module.feedintegration.atomfeed.contract.patient.OpenMRSPatientFullRepresentation;
 import org.bahmni.module.feedintegration.atomfeed.contract.patient.OpenMRSPatientIdentifier;
+import org.bahmni.module.feedintegration.atomfeed.contract.patient.OpenMRSPersonAddress;
+import org.bahmni.module.feedintegration.atomfeed.contract.patient.OpenMRSPersonAttribute;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -96,14 +89,34 @@ public class CraterAPIClient {
 	public void create_customer(OpenMRSPatientFullRepresentation patientFR, String auth) throws Exception {
 		String name = patientFR.getPerson().getPreferredName().getPreferredFullName();
 		String uuid = getuuid(patientFR);
-		CloseableHttpResponse response;
-		CloseableHttpClient httpClient = HttpClients.createDefault();
-		HttpPost request = new HttpPost(crater_url + "/api/v1/customers");	
-		
 		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
 		nameValuePairs.add(new BasicNameValuePair("name", name));
 		nameValuePairs.add(new BasicNameValuePair("contact_name", uuid));
 		nameValuePairs.add(new BasicNameValuePair("currency_id", currencyId));
+		
+		OpenMRSPersonAddress address = patientFR.getPerson().getPreferredAddress();
+		nameValuePairs.add(new BasicNameValuePair("billing[name]", address.getAddress1()));
+		nameValuePairs.add(new BasicNameValuePair("billing[address_street_1]", address.getAddress2()));
+		nameValuePairs.add(new BasicNameValuePair("billing[address_street_2]", address.getAddress3()));
+		nameValuePairs.add(new BasicNameValuePair("billing[city]", address.getCityVillage()));
+		nameValuePairs.add(new BasicNameValuePair("billing[state]", address.getStateProvince()));
+		nameValuePairs.add(new BasicNameValuePair("billing[country_id]", address.getCountry()));
+		nameValuePairs.add(new BasicNameValuePair("billing[zip]", address.getPostalCode().toString()));
+		
+		List<OpenMRSPersonAttribute> attribute=patientFR.getPerson().getAttributes();
+		for (OpenMRSPersonAttribute openMRSPersonAttribute : attribute) {
+			String display=openMRSPersonAttribute.getAttributeType().getDisplay();
+			String value = openMRSPersonAttribute.getValue().toString();
+			if(display.equals("phoneNumber")) {
+			nameValuePairs.add(new BasicNameValuePair("phone",value));
+			}
+			else
+			nameValuePairs.add(new BasicNameValuePair(display,value));
+		}
+		CloseableHttpResponse response;
+		CloseableHttpClient httpClient = HttpClients.createDefault();
+		HttpPost request = new HttpPost(crater_url + "/api/v1/customers");	
+		
 		URI uri = new URIBuilder(request.getURI()).setParameters(nameValuePairs).build();
 		((HttpRequestBase) request).setURI(uri);
 		logger.info("URI :{}",uri);
@@ -112,7 +125,7 @@ public class CraterAPIClient {
 		request.addHeader("company", company);
 		request.addHeader("Authorization", "Bearer " + auth);
 		response = httpClient.execute(request);
-		logger.debug("Status Code  : {}", response.getStatusLine().getStatusCode());
+		logger.info("Status Code  : {}", response.getStatusLine().getStatusCode());
 		response.close();
 		httpClient.close();
 
@@ -121,16 +134,38 @@ public class CraterAPIClient {
 	public void update_customer(OpenMRSPatientFullRepresentation patientFR, String auth) throws Exception {
 		String name = patientFR.getPerson().getPreferredName().getPreferredFullName();
 		String uuid = getuuid(patientFR);
-
+	
+		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		nameValuePairs.add(new BasicNameValuePair("name", name));
+		nameValuePairs.add(new BasicNameValuePair("contact_name", uuid));
+		nameValuePairs.add(new BasicNameValuePair("currency_id", currencyId));
+		
+		OpenMRSPersonAddress address = patientFR.getPerson().getPreferredAddress();
+		nameValuePairs.add(new BasicNameValuePair("billing[name]", address.getAddress1()));
+		nameValuePairs.add(new BasicNameValuePair("billing[address_street_1]", address.getAddress2()));
+		nameValuePairs.add(new BasicNameValuePair("billing[address_street_2]", address.getAddress3()));
+		nameValuePairs.add(new BasicNameValuePair("billing[city]", address.getCityVillage()));
+		nameValuePairs.add(new BasicNameValuePair("billing[state]", address.getStateProvince()));
+		nameValuePairs.add(new BasicNameValuePair("billing[country_id]", address.getCountry()));
+		nameValuePairs.add(new BasicNameValuePair("billing[zip]", address.getPostalCode().toString()));
+		
+		List<OpenMRSPersonAttribute> attribute=patientFR.getPerson().getAttributes();
+		for (OpenMRSPersonAttribute openMRSPersonAttribute : attribute) {
+			String display=openMRSPersonAttribute.getAttributeType().getDisplay();
+			String value = openMRSPersonAttribute.getValue().toString();
+			if(display.equals("phoneNumber")) {
+			nameValuePairs.add(new BasicNameValuePair("phone",value));
+			}
+			else
+			nameValuePairs.add(new BasicNameValuePair(display,value));
+		}
 		String id = this.get_list_customers(uuid, auth);
 		
 		CloseableHttpResponse response;
 		CloseableHttpClient httpClient = HttpClients.createDefault();
 		HttpPut request = new HttpPut(crater_url + "/api/v1/customers/"+id);	
 		
-		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-		nameValuePairs.add(new BasicNameValuePair("name", name));
-		nameValuePairs.add(new BasicNameValuePair("currency_id", currencyId));
+		
 		URI uri = new URIBuilder(request.getURI()).setParameters(nameValuePairs).build();
 		((HttpRequestBase) request).setURI(uri);
 		logger.info("URI :{}",uri);
