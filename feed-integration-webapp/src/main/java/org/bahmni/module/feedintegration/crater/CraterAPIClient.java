@@ -34,6 +34,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
+import static com.sun.org.apache.xml.internal.utils.LocaleUtility.EMPTY_STRING;
+
 @Component
 @PropertySource("classpath:crater.properties")
 public class CraterAPIClient {
@@ -85,40 +87,12 @@ public class CraterAPIClient {
 			return ((result.charAt(0) == '1') ? true : false);
 		}
 	}
-
-	public void create_customer(OpenMRSPatientFullRepresentation patientFR, String auth) throws Exception {
-		String name = patientFR.getPerson().getPreferredName().getPreferredFullName();
-		String uuid = getuuid(patientFR);
-		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-		nameValuePairs.add(new BasicNameValuePair("name", name));
-		nameValuePairs.add(new BasicNameValuePair("contact_name", uuid));
-		nameValuePairs.add(new BasicNameValuePair("currency_id", currencyId));
-		
-		OpenMRSPersonAddress address = patientFR.getPerson().getPreferredAddress();
-		nameValuePairs.add(new BasicNameValuePair("billing[name]", address.getAddress1()));
-		nameValuePairs.add(new BasicNameValuePair("billing[address_street_1]", address.getAddress2()));
-		nameValuePairs.add(new BasicNameValuePair("billing[address_street_2]", address.getAddress3()));
-		nameValuePairs.add(new BasicNameValuePair("billing[city]", address.getCityVillage()));
-		nameValuePairs.add(new BasicNameValuePair("billing[state]", address.getStateProvince()));
-		nameValuePairs.add(new BasicNameValuePair("billing[country_id]", address.getCountry()));
-		nameValuePairs.add(new BasicNameValuePair("billing[zip]", address.getPostalCode().toString()));
-		
-		List<OpenMRSPersonAttribute> attribute=patientFR.getPerson().getAttributes();
-		for (OpenMRSPersonAttribute openMRSPersonAttribute : attribute) {
-			String display=openMRSPersonAttribute.getAttributeType().getDisplay();
-			String value = openMRSPersonAttribute.getValue().toString();
-			if(display.equals("phoneNumber")) {
-			nameValuePairs.add(new BasicNameValuePair("phone",value));
-			}
-			else
-			nameValuePairs.add(new BasicNameValuePair(display,value));
-		}
-		CloseableHttpResponse response;
-		CloseableHttpClient httpClient = HttpClients.createDefault();
-		HttpPost request = new HttpPost(crater_url + "/api/v1/customers");	
+	
+	public  void sendRequestToCreate(CloseableHttpResponse response,List<NameValuePair> nameValuePairs,HttpRequestBase request) throws Exception {
 		
 		URI uri = new URIBuilder(request.getURI()).setParameters(nameValuePairs).build();
 		((HttpRequestBase) request).setURI(uri);
+		CloseableHttpClient httpClient = HttpClients.createDefault();
 		logger.info("URI :{}",uri);
 		request.addHeader("Content-Type", content_type);
 		request.addHeader("Accept", accept);
@@ -128,55 +102,55 @@ public class CraterAPIClient {
 		logger.info("Status Code  : {}", response.getStatusLine().getStatusCode());
 		response.close();
 		httpClient.close();
-
+	}
+	
+	
+	public List<NameValuePair> constructCustomerFromOpenmrsPatient(String name,String uuid,String currencyId,OpenMRSPersonAddress address,List<OpenMRSPersonAttribute> attribute){
+		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+		nameValuePairs.add(new BasicNameValuePair("name", name));
+		nameValuePairs.add(new BasicNameValuePair("contact_name", uuid));
+		nameValuePairs.add(new BasicNameValuePair("currency_id", currencyId));
+		nameValuePairs.add(new BasicNameValuePair("billing[name]", address.getAddress1()));
+		nameValuePairs.add(new BasicNameValuePair("billing[address_street_1]", address.getAddress2()));
+		nameValuePairs.add(new BasicNameValuePair("billing[address_street_2]", address.getAddress3()));
+		nameValuePairs.add(new BasicNameValuePair("billing[city]", address.getCityVillage()));
+		nameValuePairs.add(new BasicNameValuePair("billing[state]", address.getStateProvince()));
+		nameValuePairs.add(new BasicNameValuePair("billing[country_id]", address.getCountry()));
+		nameValuePairs.add(new BasicNameValuePair("billing[zip]", address.getPostalCode().toString()));
+		for (OpenMRSPersonAttribute openMRSPersonAttribute : attribute) {
+			String display=openMRSPersonAttribute.getAttributeType().getDisplay();
+			String value = openMRSPersonAttribute.getValue().toString();
+			if(display.equals("phoneNumber")) {
+			nameValuePairs.add(new BasicNameValuePair("phone",value));
+			}
+			else
+			nameValuePairs.add(new BasicNameValuePair(display,value));
+		}
+		return nameValuePairs;
+		
+	}
+	
+	public void create_customer(OpenMRSPatientFullRepresentation patientFR, String auth) throws Exception {
+		String name = patientFR.getPerson().getPreferredName().getPreferredFullName();
+		String uuid = getuuid(patientFR);
+		OpenMRSPersonAddress address = patientFR.getPerson().getPreferredAddress();
+		List<OpenMRSPersonAttribute> attribute=patientFR.getPerson().getAttributes();
+		List<NameValuePair>nameValuePairs=constructCustomerFromOpenmrsPatient(name,uuid,currencyId,address,attribute);
+		CloseableHttpResponse response = null;
+		HttpPost request = new HttpPost(crater_url + "/api/v1/customers");	
+		sendRequestToCreate(response,nameValuePairs,request);
 	}
 
 	public void update_customer(OpenMRSPatientFullRepresentation patientFR, String auth) throws Exception {
 		String name = patientFR.getPerson().getPreferredName().getPreferredFullName();
 		String uuid = getuuid(patientFR);
-	
-		List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-		nameValuePairs.add(new BasicNameValuePair("name", name));
-		nameValuePairs.add(new BasicNameValuePair("contact_name", uuid));
-		nameValuePairs.add(new BasicNameValuePair("currency_id", currencyId));
-		
 		OpenMRSPersonAddress address = patientFR.getPerson().getPreferredAddress();
-		nameValuePairs.add(new BasicNameValuePair("billing[name]", address.getAddress1()));
-		nameValuePairs.add(new BasicNameValuePair("billing[address_street_1]", address.getAddress2()));
-		nameValuePairs.add(new BasicNameValuePair("billing[address_street_2]", address.getAddress3()));
-		nameValuePairs.add(new BasicNameValuePair("billing[city]", address.getCityVillage()));
-		nameValuePairs.add(new BasicNameValuePair("billing[state]", address.getStateProvince()));
-		nameValuePairs.add(new BasicNameValuePair("billing[country_id]", address.getCountry()));
-		nameValuePairs.add(new BasicNameValuePair("billing[zip]", address.getPostalCode().toString()));
-		
 		List<OpenMRSPersonAttribute> attribute=patientFR.getPerson().getAttributes();
-		for (OpenMRSPersonAttribute openMRSPersonAttribute : attribute) {
-			String display=openMRSPersonAttribute.getAttributeType().getDisplay();
-			String value = openMRSPersonAttribute.getValue().toString();
-			if(display.equals("phoneNumber")) {
-			nameValuePairs.add(new BasicNameValuePair("phone",value));
-			}
-			else
-			nameValuePairs.add(new BasicNameValuePair(display,value));
-		}
+		List<NameValuePair>nameValuePairs=constructCustomerFromOpenmrsPatient(name,uuid,currencyId,address,attribute);
+		CloseableHttpResponse response = null;
 		String id = this.get_list_customers(uuid, auth);
-		
-		CloseableHttpResponse response;
-		CloseableHttpClient httpClient = HttpClients.createDefault();
-		HttpPut request = new HttpPut(crater_url + "/api/v1/customers/"+id);	
-		
-		
-		URI uri = new URIBuilder(request.getURI()).setParameters(nameValuePairs).build();
-		((HttpRequestBase) request).setURI(uri);
-		logger.info("URI :{}",uri);
-		request.addHeader("Content-Type", content_type);
-		request.addHeader("Accept", accept);
-		request.addHeader("company", company);
-		request.addHeader("Authorization", "Bearer " + auth);
-		response = httpClient.execute(request);
-		logger.info("Status Code  : {}", response.getStatusLine().getStatusCode());
-		response.close();
-		httpClient.close();
+		HttpPut request = new HttpPut(crater_url + "/api/v1/customers/"+id);		
+		sendRequestToCreate(response,nameValuePairs,request);
 
 	}
 
@@ -224,6 +198,6 @@ public class CraterAPIClient {
                 .filter(OpenMRSPatientIdentifier::isPreferred)
                 .findFirst();
 
-        return uuid1.isPresent() ? uuid1.get().getIdentifier() : "";
+		return uuid1.isPresent() ? uuid1.get().getIdentifier() : EMPTY_STRING;
 	}
 }
