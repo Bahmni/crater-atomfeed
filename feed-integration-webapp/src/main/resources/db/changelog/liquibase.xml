@@ -21,7 +21,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet context="setup" author="ict4h" id="atomfeed-migration-202208081138">
+    <changeSet context="setup" author="ict4h" id="atomfeed-migration-202212051416">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="failed_events"/>
@@ -67,7 +67,7 @@
         </addColumn>
     </changeSet>
 
-    <changeSet author="Jaswanth" id="atomfeed-migration-202208081142">
+    <changeSet author="Jaswanth" id="atomfeed-migration-202211051417">
         <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="failed_event_retry_log"/>
