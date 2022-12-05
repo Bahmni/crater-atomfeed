@@ -39,8 +39,6 @@ public class PatientFailedFeedJob implements FeedJob {
         if(atomFeedClient == null){
             atomFeedClient = atomFeedClientFactory.get(PATIENT_FEED_URI, patientFeedWorker);
         }
-        logger.info("Processing failed event.");
         atomFeedClient.processFailedEvents();
-        logger.info("Completed processing failed event.");
     }
 }

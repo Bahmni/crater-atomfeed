@@ -125,7 +125,7 @@ public class CraterAPIClient {
 
         JSONObject parameters = new JSONObject();
         parameters.put("name", name);
-        parameters.put("currency_id", currencyId);
+        parameters.put("currency_id", Integer.valueOf(currencyId));
         String jsonInputString = parameters.toString();
 
         try (OutputStream os = con.getOutputStream()) {
