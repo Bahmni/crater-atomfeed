@@ -88,8 +88,8 @@ public class CraterAPIClient {
 		}
 	}
 	
-	public  void sendRequestToCreate(CloseableHttpResponse response,List<NameValuePair> nameValuePairs,HttpRequestBase request) throws Exception {
-		
+	public  void sendRequestToCrater(List<NameValuePair> nameValuePairs,HttpRequestBase request) throws Exception {
+		CloseableHttpResponse response;
 		URI uri = new URIBuilder(request.getURI()).setParameters(nameValuePairs).build();
 		((HttpRequestBase) request).setURI(uri);
 		CloseableHttpClient httpClient = HttpClients.createDefault();
@@ -136,9 +136,8 @@ public class CraterAPIClient {
 		OpenMRSPersonAddress address = patientFR.getPerson().getPreferredAddress();
 		List<OpenMRSPersonAttribute> attribute=patientFR.getPerson().getAttributes();
 		List<NameValuePair>nameValuePairs=constructCustomerFromOpenmrsPatient(name,uuid,currencyId,address,attribute);
-		CloseableHttpResponse response = null;
 		HttpPost request = new HttpPost(crater_url + "/api/v1/customers");	
-		sendRequestToCreate(response,nameValuePairs,request);
+		sendRequestToCrater(nameValuePairs,request);
 	}
 
 	public void update_customer(OpenMRSPatientFullRepresentation patientFR, String auth) throws Exception {
@@ -147,10 +146,9 @@ public class CraterAPIClient {
 		OpenMRSPersonAddress address = patientFR.getPerson().getPreferredAddress();
 		List<OpenMRSPersonAttribute> attribute=patientFR.getPerson().getAttributes();
 		List<NameValuePair>nameValuePairs=constructCustomerFromOpenmrsPatient(name,uuid,currencyId,address,attribute);
-		CloseableHttpResponse response = null;
 		String id = this.get_list_customers(uuid, auth);
 		HttpPut request = new HttpPut(crater_url + "/api/v1/customers/"+id);		
-		sendRequestToCreate(response,nameValuePairs,request);
+		sendRequestToCrater(nameValuePairs,request);
 
 	}
 
