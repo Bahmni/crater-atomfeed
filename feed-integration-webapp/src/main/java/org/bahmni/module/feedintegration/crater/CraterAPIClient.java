@@ -85,7 +85,7 @@ public class CraterAPIClient {
 			return ((result.charAt(0) == '1') ? true : false);
 		}
 	}
-	
+
 	public  void sendRequestToCrater(HttpRequestBase request) throws Exception {
 		CloseableHttpResponse response;
 		URI uri = new URIBuilder(request.getURI()).build();
@@ -101,10 +101,10 @@ public class CraterAPIClient {
 		response.close();
 		httpClient.close();
 	}
-	
-	
+
+
 	public JSONObject constructCustomerFromOpenmrsPatient(String name,String uuid,OpenMRSPersonAddress address ,List<OpenMRSPersonAttribute> attribute){
-		
+
 		JSONObject parameters = new JSONObject();
 		ResponseBIllingAddress billing=new ResponseBIllingAddress();
 	    parameters.put("name", name);
@@ -120,23 +120,25 @@ public class CraterAPIClient {
 			parameters.put(display,value);
 		}
 		billing.setName(name);
-		billing.setAddress_street_1(address.getAddress1());
-		billing.setAddress_street_2(address.getAddress2());
-		billing.setCity(address.getCityVillage());
-		billing.setCountry_id(address.getCountry());
-		billing.setState(address.getStateProvince());
-		billing.setZip(address.getPostalCode().toString());
+		if(address != null) {
+			if(address.getAddress1() != null) billing.setAddress_street_1(address.getAddress1());
+			if(address.getAddress2() != null) billing.setAddress_street_2(address.getAddress2());
+			if(address.getCityVillage() != null) billing.setCity(address.getCityVillage());
+			if(address.getCountry() != null) billing.setCountry_id(address.getCountry());
+			if(address.getStateProvince() != null) billing.setState(address.getStateProvince());
+			if(address.getPostalCode() != null) billing.setZip(address.getPostalCode().toString());
+		}
 		parameters.put("billing",new JSONObject(billing));
 	    return parameters;
-				
-	}	
-	
+
+	}
+
 	public void create_customer(OpenMRSPatientFullRepresentation patientFR, String auth) throws Exception {
 		String name = patientFR.getPerson().getPreferredName().getPreferredFullName();
 		String uuid = getuuid(patientFR);
 		OpenMRSPersonAddress address = patientFR.getPerson().getPreferredAddress();
 		List<OpenMRSPersonAttribute> attribute=patientFR.getPerson().getAttributes();
-		HttpPost request = new HttpPost(crater_url + "/api/v1/customers");	
+		HttpPost request = new HttpPost(crater_url + "/api/v1/customers");
 		JSONObject parameters=constructCustomerFromOpenmrsPatient(name,uuid,address,attribute);
 		parameters.put("currency_id", currencyId);
 		StringEntity params = new StringEntity(parameters.toString());
