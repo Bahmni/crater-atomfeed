@@ -3,15 +3,15 @@ package org.bahmni.module.feedintegration;
 import org.bahmni.module.feedintegration.atomfeed.jobs.FeedJob;
 import org.bahmni.module.feedintegration.model.OpenMRSPatientFeedForCraterJob;
 import org.bahmni.module.feedintegration.repository.CronJobRepository;
-import org.hibernate.SessionFactory;
-import org.hibernate.jpa.HibernateEntityManagerFactory;
+import org.ict4h.atomfeed.jdbc.AtomFeedJdbcTransactionManager;
+import org.ict4h.atomfeed.jdbc.JdbcConnectionProvider;
 import org.quartz.CronExpression;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.web.SpringBootServletInitializer;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+
 
 @SpringBootApplication
 @ComponentScan(basePackages = "org.bahmni.module.feedintegration.*")
@@ -53,12 +54,11 @@ public class Application extends SpringBootServletInitializer implements Schedul
         SpringApplication.run(Application.class, args);
         logger.info("************ Started Crater Atomfeed app **********");
     }
-
+    
     @Bean
-    public SessionFactory sessionFactory(HibernateEntityManagerFactory hemf) {
-        return hemf.getSessionFactory();
+    public AtomFeedJdbcTransactionManager atomFeedJdbcTransactionManager(JdbcConnectionProvider jdbcConnectionProvider){
+        return new AtomFeedJdbcTransactionManager(jdbcConnectionProvider);
     }
-
 
     @Bean(destroyMethod = "shutdown")
     public Executor taskExecutor() {
