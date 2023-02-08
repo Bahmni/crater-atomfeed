@@ -1,6 +1,5 @@
 package org.bahmni.module.feedintegration.crater;
 
-import static com.sun.org.apache.xml.internal.utils.LocaleUtility.EMPTY_STRING;
 
 import java.io.IOException;
 import java.net.URI;
@@ -204,6 +203,6 @@ public class CraterAPIClient {
                 .filter(OpenMRSPatientIdentifier::isPreferred)
                 .findFirst();
 
-		return uuid1.isPresent() ? uuid1.get().getIdentifier() : EMPTY_STRING;
+		return uuid1.isPresent() ? uuid1.get().getIdentifier() : "";
 	}
 }
