@@ -107,7 +107,7 @@ public class OpenMRSPersonAddress {
 		this.uuid = uuid;
 	}
 
-	
+
 
 	@Override
 	public String toString() {

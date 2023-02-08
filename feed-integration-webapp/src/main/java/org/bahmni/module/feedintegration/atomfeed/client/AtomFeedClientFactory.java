@@ -9,11 +9,15 @@ import org.ict4h.atomfeed.client.service.AtomFeedClient;
 import org.ict4h.atomfeed.client.service.EventWorker;
 import org.ict4h.atomfeed.client.service.FeedClient;
 import org.ict4h.atomfeed.jdbc.AtomFeedJdbcTransactionManager;
+import org.ict4h.atomfeed.server.transaction.AtomFeedSpringTransactionSupport;
+import org.openmrs.module.atomfeed.transaction.support.AtomFeedSpringTransactionManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.PlatformTransactionManager;
 
+import javax.sql.DataSource;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -22,10 +26,7 @@ import java.net.URISyntaxException;
 public class AtomFeedClientFactory {
 
     @Autowired
-    private AtomFeedJdbcTransactionManager transactionManager;
-
-    @Autowired
-    private BasicJdbcConnectionProvider jdbcConnectionProvider;
+    private AtomFeedSpringTransactionSupport atomFeedSpringTransactionSupport;
 
     @Value("${feed.connectionTimeoutInMilliseconds}")
     private String FEED_CONNECT_TIMEOUT;
@@ -49,16 +50,16 @@ public class AtomFeedClientFactory {
     }
 
     private FeedClient getFeedClient(AtomFeedProperties atomFeedProperties, String feedName,
-                                        EventWorker eventWorker, ClientCookies cookies) {
+                                     EventWorker eventWorker, ClientCookies cookies) {
         try {
             org.ict4h.atomfeed.client.AtomFeedProperties atomFeedClientProperties = createAtomFeedClientProperties(atomFeedProperties);
 
             AllFeeds allFeeds = new AllFeeds(atomFeedClientProperties, cookies);
-            AllMarkersJdbcImpl allMarkers = new AllMarkersJdbcImpl(jdbcConnectionProvider);
-            AllFailedEventsJdbcImpl allFailedEvents = new AllFailedEventsJdbcImpl(jdbcConnectionProvider);
+            AllMarkersJdbcImpl allMarkers = new AllMarkersJdbcImpl(atomFeedSpringTransactionSupport);
+            AllFailedEventsJdbcImpl allFailedEvents = new AllFailedEventsJdbcImpl(atomFeedSpringTransactionSupport);
 
             return new AtomFeedClient(allFeeds, allMarkers, allFailedEvents,
-                    atomFeedClientProperties, transactionManager, new URI(feedName), eventWorker);
+                    atomFeedClientProperties, atomFeedSpringTransactionSupport, new URI(feedName), eventWorker);
 
         } catch (URISyntaxException e) {
             throw new RuntimeException(String.format("Is not a valid URI - %s", feedName));

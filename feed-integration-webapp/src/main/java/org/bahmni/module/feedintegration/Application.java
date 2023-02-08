@@ -3,8 +3,7 @@ package org.bahmni.module.feedintegration;
 import org.bahmni.module.feedintegration.atomfeed.jobs.FeedJob;
 import org.bahmni.module.feedintegration.model.OpenMRSPatientFeedForCraterJob;
 import org.bahmni.module.feedintegration.repository.CronJobRepository;
-import org.ict4h.atomfeed.jdbc.AtomFeedJdbcTransactionManager;
-import org.ict4h.atomfeed.jdbc.JdbcConnectionProvider;
+import org.ict4h.atomfeed.server.transaction.AtomFeedSpringTransactionSupport;
 import org.quartz.CronExpression;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,8 +20,10 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 import org.springframework.scheduling.support.PeriodicTrigger;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import javax.sql.DataSource;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
@@ -54,10 +55,11 @@ public class Application extends SpringBootServletInitializer implements Schedul
         SpringApplication.run(Application.class, args);
         logger.info("************ Started Crater Atomfeed app **********");
     }
-    
+
+
     @Bean
-    public AtomFeedJdbcTransactionManager atomFeedJdbcTransactionManager(JdbcConnectionProvider jdbcConnectionProvider){
-        return new AtomFeedJdbcTransactionManager(jdbcConnectionProvider);
+    public AtomFeedSpringTransactionSupport atomFeedSpringTransactionSupport(PlatformTransactionManager platformTransactionManager, DataSource dataSource) {
+        return new AtomFeedSpringTransactionSupport(platformTransactionManager, dataSource);
     }
 
     @Bean(destroyMethod = "shutdown")
