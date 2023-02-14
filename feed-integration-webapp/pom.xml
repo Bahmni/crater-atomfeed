@@ -140,7 +140,7 @@
 		<dependency>
 			<groupId>org.bahmni.module</groupId>
 			<artifactId>web-clients</artifactId>
-			<version>0.94.3-SNAPSHOT</version>
+			<version>0.94.3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.ict4h</groupId>
