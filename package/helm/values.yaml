@@ -3,6 +3,7 @@ global:
   affinity: {}
   tolerations: {}
   storageClass: ""
+  TZ: "UTC"
 
 ReplicaCount: 1
 

@@ -9,4 +9,5 @@ data:
   CRATER_URL:  "{{ .Values.config.CRATER_URL }}"
   OPENMRS_HOST: "{{ .Values.config.OPENMRS_HOST }}"
   OPENMRS_PORT: "{{ .Values.config.OPENMRS_PORT }}"
+  TZ: "{{ .Values.global.TZ }}"
   
