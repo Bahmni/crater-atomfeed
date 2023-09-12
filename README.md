@@ -11,7 +11,7 @@ OpenMRS acts as a publisher to publish all patients which are then created in Cr
 
 #### Pre-requisite
 * mvn 3.6.2 
-* Java 1.8
+* Java 11
 
 #### Running the app
 > cd /workspace-dir/crater-atomfeed/feed-integration-webapp/
