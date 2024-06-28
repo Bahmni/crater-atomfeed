@@ -1,31 +1,43 @@
 # Crater Atomfeed
 
-Crater is an open-source web & mobile app that helps you track expenses, payments & create professional invoices & estimates.
-More information about Crater is provided on their [official website](https://craterapp.com/).
+Crater Atomfeed is an atomfeed client designed to facilitate asynchronous patient synchronization between Bahmni and Crater, utilizing OpenMRS as the publisher. This integration serves as a lightweight alternative to Odoo for invoicing and billing within the Bahmni-Lite project.
 
-Bahmni is using Crater as a lightweight alternative to Odoo for invoicing & billing purposes, as a part of the Bahmni-Lite project. 
-You can read more about it from this [presentation](https://bahmni.atlassian.net/l/cp/WkeRpuDc).
+## About Crater
 
-Crater-Atomfeed is an atomfeed client which serves as a way to link patients between Bahmni and Crater asynchronously.
-OpenMRS acts as a publisher to publish all patients which are then created in Crater using REST API calls.
+Crater is an open-source application that enables users to manage expenses, payments, and create professional invoices and estimates. More information about Crater can be found on the [official website](https://craterapp.com/).
 
-#### Pre-requisite
-* mvn 3.6.2 
-* Java 11
+## Bahmni Integration
 
-#### Running the app
-> cd /workspace-dir/crater-atomfeed/feed-integration-webapp/
+Bahmni leverages Crater as part of its Bahmni-Lite initiative, integrating it for invoicing and billing functionalities. Further details are available in this [presentation](https://bahmni.atlassian.net/l/cp/WkeRpuDc).
 
-> mvn clean install 
+## Prerequisites
 
-> mvn spring-boot:run
+Ensure the following tools are installed:
 
-#### Running Tests
-> mvn clean test
+- Apache Maven 3.6.2
+- Java 11
 
-#### Documentation
+## Running the Application
 
-Please take a look at [wiki](https://github.com/ICT4H/atomfeed/wiki) for documentation on how to use Atomfeed.
+To build and run Crater-Atomfeed:
 
-You can also go through the Bahmni [wiki](https://bahmni.atlassian.net/wiki/spaces/BAH/pages/3506200/Atom+Feed+Based+Synchronization+in+Bahmni) on details of the tables created and how Atomfeed works.
+```bash
+cd /workspace-dir/crater-atomfeed/feed-integration-webapp/
+mvn clean install
+mvn spring-boot:run
+```
 
+## Running Tests
+
+Execute the following command to run tests:
+
+```bash
+mvn clean test
+```
+
+## Documentation
+
+Refer to the following resources for documentation:
+
+- [Atomfeed Wiki](https://github.com/ICT4H/atomfeed/wiki): Provides details on using Atomfeed.
+- [Bahmni Wiki](https://bahmni.atlassian.net/wiki/spaces/BAH/pages/3506200/Atom+Feed+Based+Synchronization+in+Bahmni): Explains the tables created and operational details of Atomfeed in Bahmni.
