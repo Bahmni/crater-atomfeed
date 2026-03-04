@@ -10,6 +10,12 @@
 	<artifactId>crater-atomfeed-webapp</artifactId>
 	<modelVersion>4.0.0</modelVersion>
 	<packaging>jar</packaging>
+	<licenses>
+        <license>
+            <name>Mozilla Public License Version 2.0</name>
+            <url>https://www.bahmni.org/license/mplv2hd</url>
+        </license>
+    </licenses>
 	<build>
 		<plugins>
 			<plugin>
@@ -246,6 +252,6 @@
 			<id>icm</id>
 			<name>Spring Framework Milestone Repository</name>
 			<url>https://maven.icm.edu.pl/artifactory/repo</url>
-		</pluginRepository>
+	    </pluginRepository>
 	</pluginRepositories>
 </project>
