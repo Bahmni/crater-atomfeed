@@ -79,6 +79,7 @@
 	<properties>
 		<atomfeed.version>1.10.1</atomfeed.version>
 		<hapi-base.version>2.2</hapi-base.version>
+		<tomcat.version>9.0.118</tomcat.version>
 	</properties>
 	<dependencies>
 		<dependency>
